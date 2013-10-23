@@ -1,20 +1,26 @@
 #include "PositionTask.h"
 
-// TODO make these in-line for speed-up.
-Vec3 TaskSpace::PositionTask::positionInGround(const State& s) const
+Vector PositionTask::taskSpaceForce(State& s) const
 {
-    return _mobilizedBody.findStationLocationInGround(s, _positionInBody);
+    return taskSpaceMassMatrix * controlLaw(s) + taskSpaceCoriolis(s) +
+        taskSpaceGravity(s);
 }
 
-Vec3 TaskSpace::PositionTask::velocityInGround(const State& s) const
+Matrix PositionTask::nullspaceProjectionTranspose(const State& s) const
 {
-    return smss.multiplyByStationJacobian(s, _mobilizedBodyIndex,
-            _positionInBody, s.getU());
+    Matrix identity(_numCoords, _numCoords);
+    for (unsigned int i = 0; i < _numCoords; i++)
+    {
+        identity[i, i] = 1.0;
+    }
+    return identity - jacobian(s).transpose() * jacobianGeneralizedInverse().transpose();
+
 }
 
-Vector TaskSpace::PositionTask::controlLaw(const State& s) const
-{ 
-    return desiredAcceleration(s)
-        + _velocityGain * (desiredVelocity(s) - velocityInGround(s))
-        + _positionGain * (desiredPosition(s) - positionInGround(s));
+Vector generalizedForces(const State& s) const
+{
+    Vector returnValue;
+    smss.multiplyByStationJacobianTranspose(s, _mobilizedBodyIndex,
+            _positionInBody, taskSpaceForce(s), returnValue);
+    return returnValue;
 }

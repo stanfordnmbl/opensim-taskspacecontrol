@@ -1,6 +1,10 @@
 #ifndef OPENSIM_TASKSPACE_TASK_H_
 #define OPENSIM_TASKSPACE_TASK_H_
 
+using SimTK::State;
+using SimTK::Matrix;
+using SimTK::Vector;
+
 /* TODO
  * Maybe there is no PriorityLevel; there's just tasks, in an order, and you
  * can have a Composite task that has as many other tasks as you'd like. What
@@ -22,15 +26,12 @@ OpenSim_DECLARE_ABSTRACT_OBJECT(Task, OpenSim::Object);
 public:
     /** @name Property declarations */
     /**@{**/
-    // TODO ignoreCoriolis
-    // TODO ignoreGravity
     /**@}**/
 
-    /** Expressed in ground.
-     * */
-    Vector taskSpaceForce(State& s) const;
-    virtual Vector controlLaw(State& s) const = 0;
-    MobilizedBodyIndex
+    virtual Matrix nullspaceProjectionTranspose(const State& s) const = 0;
+
+    // TODO OVERRIDE_11
+    virtual Vector generalizedForces(const State& s) const = 0;
 
 };
 

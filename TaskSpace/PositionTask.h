@@ -10,17 +10,32 @@ class OSIMTASKSPACE_API PositionTask : public TaskSpace::Task
 OpenSim_DECLARE_CONCRETE_OBJECT(PositionTask, TaskSpace::Task);
 public:
 
-    virtual Vec3 desiredPosition(const State& s) const = 0;
-    virtual Vec3 desiredVelocity(const State& s) const = 0;
-    virtual Vec3 desiredAcceleration(const State& s) const = 0;
+    /** @name Property declarations */
+    /**@{**/
+    // TODO compensateForCoriolis
+    // TODO compensateForGravity
+    /**@}**/
 
-    Vec3 positionInGround(const State& s) const;
-    Vec3 velocityInGround(const State& s) const;
+    /** Expressed in ground.
+     * */
+    Vector taskSpaceForce(State& s) const;
+
+    Matrix nullspaceProjectionTranspose(const State& s) const;
+
+    Vector generalizedForces(const State& s) const;
+
+    Matrix taskSpaceMassMatrix(const State& s) const;
+    
+    Matrix jacobianGeneralizedInverse(const State& s) const;
+
+    Matrix taskSpaceQuadraticVelocity(const State& s) const;
+
+    Matrix taskSpaceGravity(const State& s) const;
 
     /** Like an acceleration.
      * */
-    virtual Vector controlLaw(const State& s) const;
-
+    // OVERRIDE_11
+    virtual Vector controlLaw(const State& s) const = 0;
 
 } // namespace TaskSpace
 
