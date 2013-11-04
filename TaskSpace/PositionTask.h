@@ -12,7 +12,7 @@ public:
 
     /** @name Property declarations */
     /**@{**/
-    // TODO compensateForCoriolis
+    // TODO compensateForQuadraticVelocity
     // TODO compensateForGravity
     /**@}**/
 
