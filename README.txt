@@ -6,9 +6,11 @@ will include the necessary wrapping classes (for serialization, etc.).
 TODO
 ====
 
+* Use a different RRR model.
 * Change OSIMTASKSPACE_API to OSIMSIMULATION_API?
 * The methods take in references to the output, instead of returning Matrices,
     * etc.
+* Is it true that generalized coordinate tasks must be last in the priorities?
 
 
 Notes
