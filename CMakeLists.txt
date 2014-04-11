@@ -2,9 +2,6 @@ project(OpenSimTaskSpaceControl)
 
 cmake_minimum_required(VERSION 2.6)
 
-SET(KIT TaskSpaceControl)
-SET(UKIT TASKSPACECONTROL)
-
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 FIND_PACKAGE(OpenSim REQUIRED)
 
@@ -13,8 +10,12 @@ SET(CMAKE_CONFIGURATION_TYPES "RelWithDebInfo;Release"
       Only supports Debug, Release, MinSizeRel, and RelWithDebInfo; anything
       else will be ignored." FORCE )
 
-INCLUDE_DIRECTORIES(${OpenSimSimbody_INCLUDE_DIRS})
+SET(KIT TaskSpaceControl)
+SET(UKIT TASKSPACECONTROL)
 
-SUBDIRS(TaskSpace examples)
+INCLUDE_DIRECTORIES(${OPENSIMSIMBODY_INCLUDE_DIRS})
+
+ADD_SUBDIRECTORY(TaskSpace)
+ADD_SUBDIRECTORY(tests)
 
 

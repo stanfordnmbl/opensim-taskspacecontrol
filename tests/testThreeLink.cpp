@@ -3,6 +3,16 @@
  *
  * */
 
+#include <OpenSim/OpenSim.h>
+
+using namespace OpenSim;
+using namespace SimTK;
+
+int main()
+{
+}
+
+/***
 using SimTK::RungeKuttaMersonIntegrator;
 using SimTK::State;
 using SimTK::Vec3;
@@ -80,3 +90,4 @@ int main(int argc, char * argv[])
     return EXIT_SUCCESS;
 
 }
+*/

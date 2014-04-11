@@ -5,8 +5,8 @@
 # -------------
 # Simbios National Center for Physics Based Simulation of Biological Structures
 # Stanford University
-# This cmake file created in 2013 by Chris Dembia and is in the public 
-# domain; Simbody itself is open source under the Apache 2.0 license.
+# This cmake file was created in 2013 by Chris Dembia and is in the public 
+# domain.
 #
 #
 # What is this file? What is it part of?
@@ -40,8 +40,8 @@
 # To use the headers and libraries from OpenSim in your own targets:
 #
 #   include_directories(${OPENSIMSIMBODY_INCLUDE_DIRS})
-#   add_executable(myAwesomeClientToOpenSim ${CLIENT_SOURCE} ${CLIENT_HEADERS})
-#   target_link_libraries(myAwesomeClientToOpenSim ${OPENSIMSIMBODY_LIBRARIES})
+#   add_executable(myClientApplication ${CLIENT_SOURCE} ${CLIENT_HEADERS})
+#   target_link_libraries(myClientApplication ${OPENSIMSIMBODY_LIBRARIES})
 #
 # You can omit the 'REQUIRED' above if OpenSim isn't actually required for your
 # project. If, in this case, you want to check if OpenSim was found, check the
@@ -64,7 +64,6 @@
 #       libraries with 'osim' in their name.
 #   OPENSIMSIMBODY_LIBRARIES - suitable for target_link_libraries(). Contains
 #       libraries with 'osim' or 'SimTK' in their name.
-#   
 #
 # How does the script work?
 # -------------------------
@@ -88,8 +87,9 @@
 # consistent with the distribution of OpenSim. Most users will use this version
 # of Simbody (probably won't have a separate installation of Simbody), and thus
 # will use the variables that start with OPENSIMSIMBODY_*. If you'd like to use
-# a separate version of Simbody, then you can use Simbody's FindSimbody.cmake
-# script, and use find_package(Simbody).
+# a separate installation of Simbody, use the OPENSIM_* variables above instead.
+# Then, you can find_package(Simbody) using Simbody's
+# FindSimbody.cmake or SimbodyConfig.cmake scripts.
 #
 #
 # TODO
@@ -97,17 +97,17 @@
 # - *MOST IMPORTANT* In find_path(... PATH_SUFFIXES), detect OpenSim x.x (any
 #       version number).
 # - Deal with the library NameSpace.
-# - Version selection. The version argument to find_package is ignored.
-# - Include both optimized and debug libraries in OPENSIM_LIBRARIES.
+# - Version selection. Right now, the version argument to find_package is
+#   ignored.
 # - Static libraries.
 # - Should OPENSIM_LIB_DIR point to bin on Windows?
 #
 # See this website to see how these scripts should be written:
 # www.cmake.org/Wiki/CMake:How_To_Find_Libraries
 #
-# The basic gist is that we first try to set *_INCLUDE_DIR and *_LIBRARY
-# variables. If we DO find OpenSim, then we also set the *_INCLUDE_DIRS and
-# *_LIBRARIES variables that the client is expected to use.
+# The basic gist of the script below is that we first try to set *_INCLUDE_DIR
+# and *_LIBRARY variables. If we DO find OpenSim, then we also set the
+# *_INCLUDE_DIRS and *_LIBRARIES variables that the client is expected to use.
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -210,7 +210,7 @@ set(OPENSIM_LIBRARY)
 
 set(OPENSIM_LIBRARY_LIST
     osimCommon osimSimulation osimAnalyses osimActuators osimTools)
-set(OPENSIMSIMBODY_LIBRARY_LIST SimTKcommon SimTKmath SimTKsimbody)
+set(SIMBODY_LIBRARY_LIST SimTKcommon SimTKmath SimTKsimbody)
 
 foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
     find_library(FOUND_LIB NAMES ${LIB_NAME}
@@ -219,6 +219,7 @@ foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
     if(FOUND_LIB)
         list(APPEND OPENSIM_LIBRARY optimized ${FOUND_LIB})
     endif()
+    unset(FOUND_LIB CACHE)
 
     find_library(FOUND_LIB NAMES ${LIB_NAME}_d
         PATHS ${OPENSIM_LIB_DIR}
@@ -226,18 +227,20 @@ foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
     if(FOUND_LIB)
         list(APPEND OPENSIM_LIBRARY debug ${FOUND_LIB}_d)
     endif()
+    unset(FOUND_LIB CACHE)
 endforeach()
 
 # Start off this list of libraries with the OpenSim libraries.
 set(OPENSIMSIMBODY_LIBRARY ${OPENSIM_LIBRARY})
 
-foreach(LIB_NAME IN LISTS OPENSIMSIMBODY_LIBRARY_LIST)
+foreach(LIB_NAME IN LISTS SIMBODY_LIBRARY_LIST)
     find_library(FOUND_LIB NAMES ${LIB_NAME}
         PATHS ${OPENSIM_LIB_DIR}
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIMSIMBODY_LIBRARY optimized ${FOUND_LIB})
     endif()
+    unset(FOUND_LIB CACHE)
 
     find_library(FOUND_LIB NAMES ${LIB_NAME}_d
         PATHS ${OPENSIM_LIB_DIR}
@@ -245,8 +248,8 @@ foreach(LIB_NAME IN LISTS OPENSIMSIMBODY_LIBRARY_LIST)
     if(FOUND_LIB)
         list(APPEND OPENSIMSIMBODY_LIBRARY debug ${FOUND_LIB}_d)
     endif()
+    unset(FOUND_LIB CACHE)
 endforeach()
-unset(FOUND_LIB CACHE)
 
 
 # Wrap up
@@ -262,7 +265,9 @@ endif()
 # This CMake-supplied script provides standard error handling.
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(OpenSim
-    "Could NOT find OpenSim. Try setting OPENSIM_INSTALL_DIR."
+    "
+    Could NOT find OpenSim. Try setting OPENSIM_INSTALL_DIR, or 
+    create an environment variable OPENSIM_HOME."
     OPENSIM_INCLUDE_DIR)
 
 # OPENSIM_FOUND is set automatically for us by find_package().
