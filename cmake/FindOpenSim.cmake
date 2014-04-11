@@ -101,8 +101,6 @@
 #   ignored.
 # - Static libraries.
 # - Should OPENSIM_LIB_DIR point to bin on Windows?
-# - find_library calls are unnecessary since we are already searching
-#   for the libraries "manually."
 #
 # See this website to see how these scripts should be written:
 # www.cmake.org/Wiki/CMake:How_To_Find_Libraries
@@ -199,36 +197,20 @@ set(OPENSIM_LIBRARIES_DOC "Suitable for target_link_libraries(). Contains only
 set(OPENSIMSIMBODY_LIBRARIES_DOC "Suitable for target_link_libraries().
     Contains libraries with either 'osim' or 'SimTK' in their name.")
 
-# This variable is for our purposes only; its name comes from convention:
+# This variables are for our purposes only; its name comes from convention:
 set(OPENSIM_LIBRARY)
 
-
-# Get the list of libraries to find.
-# ----------------------------------
-# Need to find all libraries, without specifying their names directly.
-# This complication comes in from the fact that the user can choose to name
-# the copied-over Simbody libraries with a "NameSpace",
-# so we may end up with libraries like OpenSim_SimTK*.
-file(GLOB OSIM_TEMP RELATIVE "${OPENSIM_LIB_DIR}" "${OPENSIM_LIB_DIR}/*osim*")
-string(REGEX REPLACE ".dll|.so|.dylib" "" OPENSIM_LIBRARY_LISTT "${OSIM_TEMP}")
-
-file(GLOB SIMTK_TEMP RELATIVE "${OPENSIM_LIB_DIR}" "${OPENSIM_LIB_DIR}/*SimTK*")
-string(REGEX REPLACE ".dll|.so|.dylib" "" SIMBODY_LIBRARY_LIST "${SIMTK_TEMP}")
-
-foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LISTT)
-list(APPEND OPENSIM_LIBRARY_LIST ${LIB_NAME})
-endforeach()
-message("${OPENSIM_LIBRARY_LIST}")
+set(OPENSIM_LIBRARY_LIST
+    osimCommon osimSimulation osimAnalyses osimActuators osimTools)
+set(SIMBODY_LIBRARY_LIST SimTKcommon SimTKmath SimTKsimbody)
 
 foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
-message(${LIB_NAME})
-    find_library(FOUND_LIB NAMES "${LIB_NAME}"
-        PATHS "${OPENSIM_LIB_DIR}"
+    find_library(FOUND_LIB NAMES ${LIB_NAME}
+        PATHS ${OPENSIM_LIB_DIR}
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIM_LIBRARY optimized ${FOUND_LIB})
     endif()
-    message("${FOUND_LIB}")
     unset(FOUND_LIB CACHE)
 
     find_library(FOUND_LIB NAMES ${LIB_NAME}_d
@@ -285,7 +267,7 @@ if(OPENSIM_FOUND)
     set(OPENSIM_INCLUDE_DIRS ${OPENSIM_INCLUDE_DIR})
     set(OPENSIMSIMBODY_INCLUDE_DIRS ${OPENSIMSIMBODY_INCLUDE_DIR})
     set(OPENSIM_LIBRARIES ${OPENSIM_LIBRARY})
-    set(OPENSIMSIMBODY_LIBRARIES "${OPENSIMSIMBODY_LIBRARY}" CACHE STRING "" FORCE)
+    set(OPENSIMSIMBODY_LIBRARIES ${OPENSIMSIMBODY_LIBRARY})
 endif()
 
 mark_as_advanced(
