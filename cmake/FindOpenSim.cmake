@@ -101,6 +101,8 @@
 #   ignored.
 # - Static libraries.
 # - Should OPENSIM_LIB_DIR point to bin on Windows?
+# - find_library calls are unnecessary since we are already searching
+#   for the libraries "manually."
 #
 # See this website to see how these scripts should be written:
 # www.cmake.org/Wiki/CMake:How_To_Find_Libraries
@@ -111,12 +113,12 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-
 # Search for an OpenSim installation.
 # -----------------------------------
-if(OPENSIM_INSTALL_DIR)
+set(OPENSIM_HOME "$ENV{OPENSIM_HOME}")
+if(OPENSIM_INSTALL_DIR AND NOT "${OPENSIM_INSTALL_DIR}" STREQUAL "")
     set(OPENSIM_SEARCH_PATHS "${OPENSIM_INSTALL_DIR}")
-elseif($ENV{OPENSIM_HOME})
+elseif(OPENSIM_HOME)
     set(OPENSIM_SEARCH_PATHS "$ENV{OPENSIM_HOME}")
 else()
     # Hunt for the installation.
@@ -170,19 +172,14 @@ find_path(OPENSIM_INCLUDE_DIR
 set(OPENSIMSIMBODY_INCLUDE_DIR
     ${OPENSIM_INCLUDE_DIR}
     ${OPENSIM_INCLUDE_DIR}/SimTK/include
-    CACHE STRING
-    ${OPENSIMSIMBODY_INCLUDE_DIR_DOC}
-    FORCE)
+    )
 
 
 # OPENSIM_ROOT_DIR
 # ----------------
 # Back out the root installation directory.
 get_filename_component(OPENSIM_SDK_DIR "${OPENSIM_INCLUDE_DIR}" PATH)
-get_filename_component(OPENSIM_ROOT_DIR_TEMP "${OPENSIM_SDK_DIR}" PATH)
-set(OPENSIM_ROOT_DIR "${OPENSIM_ROOT_DIR_TEMP}" CACHE PATH
-    "Where we found OpenSim; use OPENSIM_INSTALL_DIR to change." FORCE)
-
+get_filename_component(OPENSIM_ROOT_DIR "${OPENSIM_SDK_DIR}" PATH)
 
 # OPENSIM_LIB_DIR and OPENSIM_BIN_DIR
 # -----------------------------------
@@ -191,11 +188,8 @@ if(WIN32)
 else()
     set(OPENSIM_PLATFORM_LIB_RPATH "lib")
 endif()
-set(OPENSIM_LIB_DIR ${OPENSIM_ROOT_DIR}/${OPENSIM_PLATFORM_LIB_RPATH}
-    CACHE PATH
-    "Location of OpenSim (and related Simbody) libraries." FORCE)
-set(OPENSIM_BIN_DIR ${OPENSIM_ROOT_DIR}/bin CACHE PATH
-    "Location of OpenSim executables and tools." FORCE)
+set(OPENSIM_LIB_DIR ${OPENSIM_ROOT_DIR}/${OPENSIM_PLATFORM_LIB_RPATH})
+set(OPENSIM_BIN_DIR ${OPENSIM_ROOT_DIR}/bin)
 
 
 # OPENSIM_LIBRARIES and OPENSIMSIMBODY_LIBRARIES
@@ -205,20 +199,36 @@ set(OPENSIM_LIBRARIES_DOC "Suitable for target_link_libraries(). Contains only
 set(OPENSIMSIMBODY_LIBRARIES_DOC "Suitable for target_link_libraries().
     Contains libraries with either 'osim' or 'SimTK' in their name.")
 
-# This variables are for our purposes only; its name comes from convention:
+# This variable is for our purposes only; its name comes from convention:
 set(OPENSIM_LIBRARY)
 
-set(OPENSIM_LIBRARY_LIST
-    osimCommon osimSimulation osimAnalyses osimActuators osimTools)
-set(SIMBODY_LIBRARY_LIST SimTKcommon SimTKmath SimTKsimbody)
+
+# Get the list of libraries to find.
+# ----------------------------------
+# Need to find all libraries, without specifying their names directly.
+# This complication comes in from the fact that the user can choose to name
+# the copied-over Simbody libraries with a "NameSpace",
+# so we may end up with libraries like OpenSim_SimTK*.
+file(GLOB OSIM_TEMP RELATIVE "${OPENSIM_LIB_DIR}" "${OPENSIM_LIB_DIR}/*osim*")
+string(REGEX REPLACE ".dll|.so|.dylib" "" OPENSIM_LIBRARY_LISTT "${OSIM_TEMP}")
+
+file(GLOB SIMTK_TEMP RELATIVE "${OPENSIM_LIB_DIR}" "${OPENSIM_LIB_DIR}/*SimTK*")
+string(REGEX REPLACE ".dll|.so|.dylib" "" SIMBODY_LIBRARY_LIST "${SIMTK_TEMP}")
+
+foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LISTT)
+list(APPEND OPENSIM_LIBRARY_LIST ${LIB_NAME})
+endforeach()
+message("${OPENSIM_LIBRARY_LIST}")
 
 foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
-    find_library(FOUND_LIB NAMES ${LIB_NAME}
-        PATHS ${OPENSIM_LIB_DIR}
+message(${LIB_NAME})
+    find_library(FOUND_LIB NAMES "${LIB_NAME}"
+        PATHS "${OPENSIM_LIB_DIR}"
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIM_LIBRARY optimized ${FOUND_LIB})
     endif()
+    message("${FOUND_LIB}")
     unset(FOUND_LIB CACHE)
 
     find_library(FOUND_LIB NAMES ${LIB_NAME}_d
@@ -258,7 +268,7 @@ endforeach()
 if(NOT OPENSIM_INSTALL_DIR)
     # We couldn't find OpenSim. Make it easy for the user to tell us where it
     # is.
-    set(OPENSIM_INSTALL_DIR "WHERE IS OpenSim INSTALLED (e.g., C:/OpenSim 3.1)?"
+    set(OPENSIM_INSTALL_DIR "${OPENSIM_ROOT_DIR}"
         CACHE PATH "The OpenSim installation directory." FORCE)
 endif()
 
@@ -275,8 +285,7 @@ if(OPENSIM_FOUND)
     set(OPENSIM_INCLUDE_DIRS ${OPENSIM_INCLUDE_DIR})
     set(OPENSIMSIMBODY_INCLUDE_DIRS ${OPENSIMSIMBODY_INCLUDE_DIR})
     set(OPENSIM_LIBRARIES ${OPENSIM_LIBRARY})
-    set(OPENSIMSIMBODY_LIBRARIES ${OPENSIMSIMBODY_LIBRARY})
-else()
+    set(OPENSIMSIMBODY_LIBRARIES "${OPENSIMSIMBODY_LIBRARY}" CACHE STRING "" FORCE)
 endif()
 
 mark_as_advanced(
@@ -288,4 +297,8 @@ mark_as_advanced(
     OPENSIM_LIBRARY
     OPENSIMSIMBODY_LIBRARY
 )
+
+# The following allows us to change the OpenSim installation we use.
+unset(OPENSIM_INCLUDE_DIR CACHE)
+
 
