@@ -117,7 +117,7 @@ set(OPENSIM_HOME "$ENV{OPENSIM_HOME}")
 if(OPENSIM_INSTALL_DIR AND NOT "${OPENSIM_INSTALL_DIR}" STREQUAL "")
     set(OPENSIM_SEARCH_PATHS "${OPENSIM_INSTALL_DIR}")
 elseif(OPENSIM_HOME)
-    set(OPENSIM_SEARCH_PATHS "$ENV{OPENSIM_HOME}")
+    set(OPENSIM_SEARCH_PATHS "${OPENSIM_HOME}")
 else()
     # Hunt for the installation.
     set(OPENSIM_SEARCH_PATHS)
@@ -206,7 +206,7 @@ set(SIMBODY_LIBRARY_LIST SimTKcommon SimTKmath SimTKsimbody)
 
 foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
     find_library(FOUND_LIB NAMES ${LIB_NAME}
-        PATHS ${OPENSIM_LIB_DIR}
+        PATHS "${OPENSIM_LIB_DIR}"
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIM_LIBRARY optimized ${FOUND_LIB})
@@ -214,7 +214,7 @@ foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
     unset(FOUND_LIB CACHE)
 
     find_library(FOUND_LIB NAMES ${LIB_NAME}_d
-        PATHS ${OPENSIM_LIB_DIR}
+        PATHS "${OPENSIM_LIB_DIR}"
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIM_LIBRARY debug ${FOUND_LIB}_d)
@@ -227,7 +227,7 @@ set(OPENSIMSIMBODY_LIBRARY ${OPENSIM_LIBRARY})
 
 foreach(LIB_NAME IN LISTS SIMBODY_LIBRARY_LIST)
     find_library(FOUND_LIB NAMES ${LIB_NAME}
-        PATHS ${OPENSIM_LIB_DIR}
+        PATHS "${OPENSIM_LIB_DIR}"
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIMSIMBODY_LIBRARY optimized ${FOUND_LIB})
@@ -235,7 +235,7 @@ foreach(LIB_NAME IN LISTS SIMBODY_LIBRARY_LIST)
     unset(FOUND_LIB CACHE)
 
     find_library(FOUND_LIB NAMES ${LIB_NAME}_d
-        PATHS ${OPENSIM_LIB_DIR}
+        PATHS "${OPENSIM_LIB_DIR}"
         NO_DEFAULT_PATH)
     if(FOUND_LIB)
         list(APPEND OPENSIMSIMBODY_LIBRARY debug ${FOUND_LIB}_d)
@@ -246,13 +246,8 @@ endforeach()
 
 # Wrap up
 # -------
-
-if(NOT OPENSIM_INSTALL_DIR)
-    # We couldn't find OpenSim. Make it easy for the user to tell us where it
-    # is.
-    set(OPENSIM_INSTALL_DIR "${OPENSIM_ROOT_DIR}"
-        CACHE PATH "The OpenSim installation directory." FORCE)
-endif()
+set(OPENSIM_INSTALL_DIR "${OPENSIM_ROOT_DIR}"
+    CACHE PATH "The OpenSim installation directory." FORCE)
 
 # This CMake-supplied script provides standard error handling.
 include(FindPackageHandleStandardArgs)
