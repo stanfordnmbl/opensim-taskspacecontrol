@@ -1,4 +1,4 @@
-from org.opensim.modeling import Model, Body, PlanarJoint, PinJoint, Vec3, \
+from opensim import Model, Body, PlanarJoint, PinJoint, Vec3, \
         DisplayGeometry, Transform, CoordinateActuator
 
 pi = 3.14159
@@ -85,4 +85,4 @@ linkage.addForce(act3)
 linkage.addForce(act4)
 linkage.addForce(act5)
 
-linkage.print('threelinks.osim')
+linkage.printToXML('threelinks.osim')

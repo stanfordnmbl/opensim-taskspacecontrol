@@ -36,7 +36,7 @@ void TaskSpace::Controller::computeControls(const State& s,
     NT.setToZero();
     for (unsigned int i = 0; i < _numCoords; i++) { NT[i, i] = 1.0; }
 
-    for (unsigned int iP = 1; iP < _tasks; iP++)
+    for (unsigned int iP = 1; iP < _tasks.size(); iP++)
     {
         /** TODO may make more sense to just ask the task for its jacobian, and
          * to compute the nullspace here. Do we consider generalized-coordiante

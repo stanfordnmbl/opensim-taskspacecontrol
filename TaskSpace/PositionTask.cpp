@@ -8,20 +8,20 @@ Vector PositionTask::taskSpaceForce(State& s) const
 
 Matrix PositionTask::nullspaceProjectionTranspose(const State& s) const
 {
-    // N^T = I - J * {J^#}^T = I - J^T * Lambda * J * M^{-1}
-
+    // N^T = I - J * {J^#}^T = I - J^T * Lambda * J * A^{-1}
+    // TODO can create this at compile-time.
     Matrix identity(_numCoords, _numCoords);
     for (unsigned int i = 0; i < _numCoords; i++)
     {
         identity[i, i] = 1.0;
     }
 
-    // M^{-1}
+    // A^{-1}
     Matrix Minv(_numSpeeds, _numSpeeds);
     // Minv is passed by reference; smss puts the inverse mass matrix in Minv.
     smss.calcMInv(s, Minv);
 
-    // J * M^{-1}
+    // J * A^{-1}
     Matrix J_Ainv(_numTaskDim, _numSpeeds);
     for (unsigned int iSpeed = 0; iSpeed < _numSpeeds; iSpeed++)
     {
