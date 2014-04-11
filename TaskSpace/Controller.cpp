@@ -6,7 +6,7 @@ using SimTK::Vector;
 
 using OpenSim::Model;
 
-using OpenSim::TaskSpace;
+using namespace OpenSim;
 
 // TODO:
 // -Accomodate generalized-coordinate priority levels.

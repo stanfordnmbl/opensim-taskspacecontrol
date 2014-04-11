@@ -7,6 +7,8 @@ TODO
 ====
 
 * Change OSIMTASKSPACE_API to OSIMSIMULATION_API?
+* The methods take in references to the output, instead of returning Matrices,
+    * etc.
 
 
 Notes
@@ -19,6 +21,10 @@ There is a plan to 'implement' task space in Simbody.
 
 Decisions
 =========
+
+CompositeTask or PriorityLevel?
+-------------------------------
+PriorityLevel is easier; I'll do that for now.
 
 Using a namespace, TaskSpace
 ----------------------------

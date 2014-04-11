@@ -1,13 +1,14 @@
 #ifndef OPENSIM_TASKSPACE_CONTROLLER_H_
 #define OPENSIM_TASKSPACE_CONTROLLER_H_
 
-#include "SimTKsimbody.h"
+#include <OpenSim/Simulation/Control/Controller.h>
+#include "osimTaskSpaceControlDLL.h"
 
 namespace OpenSim {
 
 namespace TaskSpace {
 
-class OSIMTASKSPACE_API Controller : public OpenSim::Controller
+class OSIMTASKSPACECONTROL_API Controller : public OpenSim::Controller
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(Controller, OpenSim::Controller);
 
