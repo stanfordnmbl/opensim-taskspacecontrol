@@ -52,6 +52,14 @@ namespace TaskSpace {
  *      \Gamma = \Gamma_0 + N_{0}^T \Gamma_1 + N_0^T N_1^T \Gamma_2 \cdots
  * \f]
  *
+ * A specific task-space controller is defined via TaskSpace::PriorityLevel's
+ * and TaskSpace::Task's. TODO describe organization of classes.
+ *
+ *
+ * Example API usage
+ * =================
+ * Here's an example of how you may use
+ *
  *
  */
 class OSIMTASKSPACECONTROL_API Controller : public OpenSim::Controller
