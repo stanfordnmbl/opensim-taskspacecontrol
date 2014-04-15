@@ -23,12 +23,16 @@ public:
     /// Identity.
     Matrix nullspaceProjectionTranspose(const State& s) const
     {
+        // TODO could be created at compile time.
         Matrix NT(_numCoords);
         NT.setToZeros();
+        NT.diag().setTo(1.0);
+        /*
         for (unsigned int i = 0; i < _numCoords; i++)
         {
             NT[i, i] = 1.0;
         }
+        */
         return NT;
     }
 

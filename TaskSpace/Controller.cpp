@@ -34,7 +34,10 @@ void TaskSpace::Controller::computeControls(const State& s,
 //    // This matrix will be N_{0(i-1)}^T. Initialize as identity matrix.
 //    Matrix NT(_numCoords, _numCoords);
 //    NT.setToZero();
+//    NT.diag().setTo(1.0);
+//    /*
 //    for (unsigned int i = 0; i < _numCoords; i++) { NT[i, i] = 1.0; }
+//    */
 //
 //    for (unsigned int iP = 1; iP < _tasks.size(); iP++)
 //    {
