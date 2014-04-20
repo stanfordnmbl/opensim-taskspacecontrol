@@ -9,6 +9,8 @@ namespace OpenSim {
 
 namespace TaskSpace {
 
+/**
+ */
 class OSIMTASKSPACE_API PriorityLevel : public OpenSim::Object
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(PriorityLevel, OpenSim::Object);

@@ -10,6 +10,7 @@ Matrix TaskSpace::PriorityLevel::jacobian(const State& s)
 
 Matrix TaskSpace::PriorityLevel::nullspaceProjectionTranspose(const State& s)
 {
+    // TODO maybe the tasks don't need to provide a nullspace projection transpose; we just concatenate all the tasks' jacobians and compute a total nullspace projection. i don't think we can just obtain it via concatenation.
 }
 
 Vector TaskSpace::PriorityLevel::generalizedForce(const State& s)

@@ -9,18 +9,27 @@ namespace OpenSim {
 namespace TaskSpace {
 
 /**
- * This Controller determines the generalized forces that achieve specified
- * tasks. The tasks can be specified within a hierarchy, so that tasks are
- * achieved in an order. TODO wording. As of now, this controller works only
- * with CoordinateActuators, and there must be one for each joint.
+ * This Controller determines the generalized forces to apply to a Model's
+ * mobilities so that the model achieve specified tasks. The tasks can be
+ * specified in a hierarchy: we only attempt to satisfy
+ * lower-priority tasks after we have satisfied higher-priority tasks. For
+ * example, we may have a high priority task that a robot arm avoids an
+ * obstacle in its workspace. We may have a second lower priority task that the
+ * robot's end effector is at a desired position.
+ *
+ * ### How it works
+ *
+ * A user defines a number of Task's and arranges them into PriorityLevel's.
+ * This Controller then attempts to achieve the tasks in the order of
+ * PriorityLevel's.
  *
  * We use Khatib's notation:
- *  -\f$ N \f$: number of coordinates (degrees of freedom) in the system.
- *  -\f$ \Gamma \in \mathbf{R}^N\f$: The output of the controller, which is the
- *      generalized forces we apply, for the entire system. 
- *  -\f$ p \f$: index through task priority levels.
+ *  -\f$ n \f$: number of coordinates (degrees of freedom) in the system.
+ *  -\f$ \Gamma \in \mathbf{R}^n\f$: The output of the controller, which is the
+ *      generalized forces we apply to the system.
  *  -\f$ P \f$: number of task priority levels.
- *  -\f$ \Gamma_i \in \mathbf{R}^N \f$: the generalized forces whose aim is to
+ *  -\f$ p \in \{0, 1, \cdots, P - 1\}\f$: index through task priority levels.
+ *  -\f$ \Gamma_i \in \mathbf{R}^n \f$: the generalized forces whose aim is to
  *      achieve the tasks in priority level \f$ i \f$. If the task is specified
  *      in the space of the generalized coordinates, then the task computes
  *      this directly. If the task is a task-space task, meaning it is
@@ -55,10 +64,19 @@ namespace TaskSpace {
  * A specific task-space controller is defined via TaskSpace::PriorityLevel's
  * and TaskSpace::Task's. TODO describe organization of classes.
  *
+ * A PriorityLevel need only provide its \f$ \Gamma_p \f$ and its \f$ N_p \f$.
  *
- * Example API usage
- * =================
+ *
+ * ### Example API usage
+ *
  * Here's an example of how you may use
+ * TODO
+ *
+ * ### Limitations
+ *
+ * As of now, this controller
+ * works only with CoordinateActuators, and there must be one for each joint
+ * TODO.
  *
  *
  */
