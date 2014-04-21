@@ -39,32 +39,16 @@ public:
     /**@{**/
     OpenSim_DECLARE_PROPERTY(body_name, string, "The name of the body "
             "on which the station resides.");
-    OpenSim_DECLARE_PROPERTY(position_on_body, Vec3, "Expressed in the "
+    OpenSim_DECLARE_PROPERTY(location_on_body, Vec3, "Expressed in the "
             "body frame.");
     // TODO compensateForQuadraticVelocity
     // TODO compensateForGravity
     /**@}**/
 
+
     // -------------------------------------------------------------------------
-    // Task interface
+    // StationTask interface
     // -------------------------------------------------------------------------
-
-    unsigned int getNumScalarTasks() const { return 3; }
-
-    /**
-     * @brief \f$ \Gamma_{pt} = J_{pt}^T F_{pt} \f$.
-     *
-     * See the other methods in this class for \f$J_{pt}\f$ and \f$F_{pt}\f$.
-     */
-    Vector generalizedForces(const State& s) const OVERRIDE_11 final;
-
-    /**
-     * @brief \f$ J_{pt} \in \mathbf{R}^{3 x n} \f$, where \f$n\f$ is the
-     * number of degrees of freedom in the Model.
-     *
-     * This is obtained from Simbody.
-     */
-    Matrix jacobian(const State& s) const OVERRIDE_11 final;
 
     /**
      * @brief The acceleration of the station, expressed in ground, that is
@@ -79,22 +63,65 @@ public:
      */
     virtual Vec3 controlLaw(const State& s) const = 0;
 
+    // -------------------------------------------------------------------------
+    // Task interface
+    // -------------------------------------------------------------------------
+
+    unsigned int getNumScalarTasks() const OVERRIDE_11 final { return 3; }
+
     /**
-     * @brief \f$ F_{pt} \f$: The force at the station, expressed in ground,
-     * that achieves the control law and also compensates for the dynamics of
-     * the system.
+     * @brief \f$ \Gamma_{pt} = J_{pt}^T F_{pt} \f$.
+     *
+     * See the other methods in this class for \f$J_{pt}\f$ and \f$F_{pt}\f$.
+     */
+    Vector generalizedForces(const State& s) const OVERRIDE_11 final;
+
+    /**
+     * @brief \f$ J_{pt} \in \mathbf{R}^{3 \times n} \f$, where \f$n\f$ is the
+     * number of degrees of freedom in the Model.
+     *
+     * This is obtained from Simbody.
+     */
+    Matrix jacobian(const State& s) const OVERRIDE_11 final;
+
+
+    // -------------------------------------------------------------------------
+    // Member functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * @brief \f$ F_{pt} = \Lambda_{pt} F^{*} + \mu_{pt} + p_{pt} \in
+     * \mathbf{R}^3 \f$: The force at the station, expressed in ground, that
+     * achieves the control law and also compensates for the dynamics of the
+     * system.
      */
     Vec3 taskSpaceForce(State& s) const;
 
     /**
-     * @brief Used in taskSpaceForce().
+     * @brief \f$ \mu_{pt} = \bar{J}^T b - \Lambda_{pt} \dot{J}_{pt} \dot{q}
+     * \in \mathbf{R}^3 \f$.  
+     *
+     * where:
+     * - \f$ b \f$ is the quadratic velocity vector for the whole system, in
+     *   generalized coordinates.
+     * - \f$ \Lambda_{pt} \f$ is the task space mass matrix of this task.
+     * - \f$ \dot{J}_{pt} \f$ is the derivative of this Tasks' jacobian.
+     * - \f$ q \f$ is the generalized coordinates.
+     *
+     * Used in taskSpaceForce().
      */
     Vec3 taskSpaceQuadraticVelocityCompensation(const State& s) const;
 
     /**
-     * @brief Used in taskSpaceForce().
+     * @brief \f$ p_{pt} = \bar{J}^T g \in \mathbf{R}^3 \f$.
+     *
+     * where \f$g\f$ is the gravity vector for the whole system, in generalized
+     * coordinates.
+     *
+     * Used in taskSpaceForce().
      */
     Vec3 taskSpaceGravityCompensation(const State& s) const;
+
 
     // -------------------------------------------------------------------------
     // Convenient methods for subclasses, for defining control laws.
@@ -103,13 +130,19 @@ public:
     /**
      * @brief Position of the station, expressed in the ground frame.
      */
-    Vec3 positionOfStationExpressedInGround(const State& s) const;
+    Vec3 positionOfStationExpressedInGround(const State& s) const
+    {
+        return m_smss.findStationLocationInGround(s, get_location_in_body());
+    }
 
     /**
      * @brief Velocity of the station relative to the ground frame, expressed
      * in the ground frame.
      */
-    Vec3 velocityOfStationInGroundExpressedInGround(const State& s) const;
+    Vec3 velocityOfStationInGroundExpressedInGround(const State& s) const
+    {
+        return m_smss.findStationVelocityInGround(s, get_location_in_body());
+    }
 
 };
 
