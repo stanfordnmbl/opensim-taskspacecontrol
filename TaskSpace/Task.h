@@ -6,11 +6,6 @@ using SimTK::Matrix;
 using SimTK::Vector;
 
 /* TODO
- * Maybe there is no PriorityLevel; there's just tasks, in an order, and you
- * can have a Composite task that has as many other tasks as you'd like. What
- * do we want the interface to be? specify a priority level as an attribute of
- * each task, or add tasks to a PriorityLevel object?
- * Tasks should be able to be as many dimensions as they want to be.
  * A gc task is quite different....can only be at the end? can't be in the
  * middle of some nullspace.
  * Ensure that we can have tasks that are force-control.
@@ -19,18 +14,47 @@ namespace OpenSim {
 
 namespace TaskSpace {
 
+/**
+ * @brief This object contains a number of scalar tasks (total of \f$ S \f$).
+ *
+ * A scalar task is related to a single Cartesian (task-space) direction fixed
+ * in a body, or a single degree of freedom. See subclasses for possibilities.
+ *
+ * The jacobian describes the "location" of the constituent scalar tasks, while
+ * the generalized forces detail how the task is achieved.
+ *
+ */
 class OSIMTASKSPACE_API Task : public OpenSim::Object
 {
 OpenSim_DECLARE_ABSTRACT_OBJECT(Task, OpenSim::Object);
 
 public:
-    /** @name Property declarations */
-    /**@{**/
-    /**@}**/
 
-    virtual Matrix nullspaceProjectionTranspose(const State& s) const = 0;
+    /**
+     * @brief Denoted as \f$ S \f$ throughout the documentation.
+     *
+     * The jacobian describes the "location" of the constituent scalar tasks.
+     * It allows one to convert generalized speeds into Cartesian (task-space)
+     * velocities, and Cartesian (task-space) forces into generalized forces.
+     *
+     * This is always constant in time (or, known at compile-time). For some
+     * tasks, this is static (the same for all instances of the Task). For some
+     * Task's, however, this number could depend on the specific definition of
+     * the Task, or on the specific model being controlled.
+     */
+    virtual unsigned int getNumScalarTasks() const = 0;
 
-    // TODO OVERRIDE_11
+    /**
+     * @brief This quantity is denoted as \f$ J_{pt} \in \mathbf{R}^{s} \f$.
+     */
+    virtual Matrix jacobian(const State& s) const = 0;
+
+    /**
+     * @brief This quantity is denoted as \f$ \Gamma_{pt} \in \mathbf{R}^{s}
+     * \f$.
+     *
+     * The generalized forces are designed to achieve the related scalar tasks.
+     */
     virtual Vector generalizedForces(const State& s) const = 0;
 
 };

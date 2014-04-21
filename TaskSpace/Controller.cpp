@@ -39,6 +39,11 @@ void TaskSpace::Controller::computeControls(const State& s,
 //    for (unsigned int i = 0; i < _numCoords; i++) { NT[i, i] = 1.0; }
 //    */
 //
+// *
+// * \f{eqnarray*}{
+// *      \Gamma &\gets& \Gamma_P \\
+// *      \Gamma &\gets& \Gamma_{p} + N_{p} \Gamma
+// * \f}
 //    for (unsigned int iP = 1; iP < _tasks.size(); iP++)
 //    {
 //        /* TODO may make more sense to just ask the task for its jacobian, and

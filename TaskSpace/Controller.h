@@ -31,17 +31,17 @@ namespace TaskSpace {
  * PriorityLevel's.
  *
  * We use Khatib's notation [1]:
- *  -\f$ n \f$: number of coordinates (degrees of freedom) in the system.
+ *  -\f$ n \f$: Number of coordinates (degrees of freedom) in the system.
  *  -\f$ \Gamma \in \mathbf{R}^n\f$: The output of the controller, which is the
  *      generalized forces we apply to the system.
  *  -\f$ P \f$: number of task priority levels.
- *  -\f$ p \in \{0, 1, \cdots, P - 1\}\f$: index through task priority levels.
+ *  -\f$ p \in \{0, 1, \cdots, P - 1\}\f$: Index through task priority levels.
  *  \f$ p = 0 \f$ is the highest priority level; \f$ p = P - 1 \f$ is the
  *      lowest priority level.
- *  -\f$ \Gamma_p \in \mathbf{R}^n \f$: the generalized forces whose aim is to
- *      achieve the tasks in priority level \f$ i \f$. This is an attribute of
+ *  -\f$ \Gamma_p \in \mathbf{R}^n \f$: The generalized forces whose aim is to
+ *      achieve the tasks in priority level \f$ p \f$. This is an attribute of
  *      a PriorityLevel.
- *  -\f$ N_i \in \mathbf{R}^{n \times n} \f$: nullspace projection matrix that
+ *  -\f$ N_p \in \mathbf{R}^{n \times n} \f$: Nullspace projection matrix that
  *      ensures tasks of priority lower than \f$p\f$ (that is, higher index) do not
  *      interfere with tasks of priority level \f$p\f$. This is an attribute of
  *      a PriorityLevel.

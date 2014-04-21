@@ -30,6 +30,7 @@ namespace TaskSpace {
 class OSIMTASKSPACE_API PriorityLevel : public OpenSim::Object
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(PriorityLevel, OpenSim::Object);
+
 public:
     /** @name Property declarations */
     /**@{**/
@@ -86,8 +87,8 @@ public:
     Matrix nullspaceProjection(const State& s);
 
     /**
-     * @brief This quantity is denoted as \f$ J_p \in \mathbf{R}^{s \times
-     * n}\f$, where \f$s\f$ is the number of scalar tasks in this priority
+     * @brief This quantity is denoted as \f$ J_p \in \mathbf{R}^{S \times
+     * n}\f$, where \f$S\f$ is the number of scalar tasks in this priority
      * level, and \f$n\f$ is the number of degrees of freedom of the Model.
      *
      * This matrix is most often used to convert generalized speeds into
@@ -112,8 +113,8 @@ public:
 
     /**
      * @brief This quantity is denoted as \f$ \bar{J}_p \in \mathbf{R}^{n
-     * \times s} \f$, where \f$n\f$ is the number of degrees of freedom of the
-     * Model, and \f$s\f$ is the number of scalar tasks in this PriorityLevel.
+     * \times S} \f$, where \f$n\f$ is the number of degrees of freedom of the
+     * Model, and \f$S\f$ is the number of scalar tasks in this PriorityLevel.
      *
      * This Matrix is computed via:
      *
@@ -132,8 +133,8 @@ public:
     Matrix dynamicallyConsistentJacobianInverse(const State& s);
 
     /**
-     * @brief This quantity is denoted as \f$ \Lambda_p \in \mathbf{R}^{s
-     * \times s} \f$, where \f$s\f$ is the number of scalar tasks in this
+     * @brief This quantity is denoted as \f$ \Lambda_p \in \mathbf{R}^{S
+     * \times S} \f$, where \f$S\f$ is the number of scalar tasks in this
      * PriorityLevel.
      *
      * Ths Matrix is computed via:
@@ -148,7 +149,6 @@ public:
      * - \f$ J_p \f$ is this PriorityLevel's jacobian (see related method).
      */
     Matrix taskSpaceMassMatrix(const State& s);
-
 
 };
 

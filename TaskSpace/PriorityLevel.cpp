@@ -18,14 +18,13 @@ Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
     // place.
     unsigned int STidx = 0;
 
-    for (unsigned int iT = 0; iT < m_taskSet.getSize(); iT++)
+    for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
     {
-        unsigned int nST = m_taskSet().get(iT).getNumScalarTasks();
+        unsigned int nST = get_tasks().get(iT).getNumScalarTasks();
 
         // Write the nST x 1 matrix (vector) to the (STidx, 0) location.
         levelGenForces.updBlock(STidx, 0, nST, 1) =
-            m_taskSet.get(iT).generalizedForces(s);
-
+            get_tasks().get(iT).generalizedForces(s);
 
         STidx += nST;
     }
@@ -49,13 +48,13 @@ Matrix TaskSpace::PriorityLevel::jacobian(const State&s s)
     // Used to write constituent jacobians to the correct place.
     unsigned int STidx = 0;
 
-    for (unsigned int iT = 0; iT < m_taskSet.getSize(); iT++)
+    for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
     {
-        unsigned int nST = m_taskSet().get(iT).getNumScalarTasks();
+        unsigned int nST = get_tasks().get(iT).getNumScalarTasks();
 
         // Write the nST x NU matrix to the (STidx, 0) location.
         levelJacobian.updBlock(STidx, 0, nST, s.getNU()) =
-            m_taskSet().get(iT).jacobian(s);
+            get_tasks().get(iT).jacobian(s);
 
         STidx += nST;
     }
@@ -74,7 +73,7 @@ Matrix TaskSpace::PriorityLevel::dynamicallyConsistentJacobianInverse(
     // ------------------
     Matrix dynConsistentJacobianInverse(s.getNU(), getNumScalarTasks());
 
-    for (unsigned int iST = 0; iST < m_taskSet.getSize(); iST++)
+    for (unsigned int iST = 0; iST < get_tasks().getSize(); iST++)
     {
         m_smss.multiplyByMInv(s,
                 jacobianTransposeTimesLambda.col(iST),
