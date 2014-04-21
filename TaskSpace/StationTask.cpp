@@ -1,6 +1,8 @@
 #include "StationTask.h"
 
-Vector StationTask::generalizedForces(const State& s) const
+using namespace OpenSim;
+
+Vector TaskSpace::StationTask::generalizedForces(const State& s) const
 {
     Vector generalizedForces;
     m_smss.multiplyByStationJacobianTranspose(s,
@@ -9,7 +11,7 @@ Vector StationTask::generalizedForces(const State& s) const
     return generalizedForces;
 }
 
-Matrix StationTask::jacobian(const State& s) const OVERRIDE_11 final
+Matrix TaskSpace::StationTask::jacobian(const State& s) const OVERRIDE_11 final
 {
     Matrix_<Vec3> jacobian;
     m_smss.calcStationJacobian(s, m_mobilizedBodyIndex, get_location_in_body(),
@@ -17,14 +19,14 @@ Matrix StationTask::jacobian(const State& s) const OVERRIDE_11 final
     return jacobian;
 }
 
-Vec3 StationTask::taskSpaceForce(State& s) const
+Vec3 TaskSpace::StationTask::taskSpaceForce(State& s) const
 {
     // TODO turn off compensation.
     return taskSpaceMassMatrix(s) * controlLaw(s) +
         taskSpaceQuadraticVelocity(s) + taskSpaceGravity(s);
 }
 
-Vec3 StationTask::taskSpaceQuadraticVelocity(const State& s) const
+Vec3 TaskSpace::StationTask::taskSpaceQuadraticVelocity(const State& s) const
 {
     // \dot{J} \dot{q} (Khatib's terminology)
     // --------------------------------------
@@ -48,7 +50,7 @@ Vec3 StationTask::taskSpaceQuadraticVelocity(const State& s) const
         systemQuadraticVelocity - taskSpaceMassMatrix(s) * jacobianDotTimesU;
 }
 
-Vec3 StationTask::taskSpaceGravity(const State& s) const
+Vec3 TaskSpace::StationTask::taskSpaceGravity(const State& s) const
 {
     Vector systemGravity;
     m_smss.multiplyBySystemJacobianTranspose(s,

@@ -1,6 +1,9 @@
 #ifndef OPENSIM_TASKSPACE_TASKSET_H_
 #define OPENSIM_TASKSPACE_TASKSET_H_
 
+#include <OpenSim/Common/Set.h>
+#include "osimTaskSpaceControlDLL.h"
+
 namespace OpenSim {
 
 namespace TaskSpace {

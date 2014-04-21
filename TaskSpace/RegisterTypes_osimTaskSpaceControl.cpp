@@ -40,6 +40,13 @@ static dllObjectInstantiator instantiator;
 OSIMTASKSPACECONTROL_API void RegisterTypes_osimTaskSpaceControl()
 {
 	Object::RegisterType( TaskSpace::Controller() );
+    Object::RegisterType( TaskSpace::PriorityLevel() );
+    Object::RegisterType( TaskSpace::PriorityLevelSet() );
+    Object::RegisterType( TaskSpace::Task() );
+    Object::RegisterType( TaskSpace::TaskSet() );
+    Object::RegisterType( TaskSpace::StationTask() );
+    Object::RegisterType( TaskSpace::StationTrackingTask() );
+    Object::RegisterType( TaskSpace::ConstantStationTrackingTask() );
 }
 
 dllObjectInstantiator::dllObjectInstantiator() 

@@ -30,6 +30,12 @@ OpenSim_DECLARE_ABSTRACT_OBJECT(Task, OpenSim::Object);
 
 public:
 
+    Task() { }
+
+    // -------------------------------------------------------------------------
+    // Specification of Task interface
+    // -------------------------------------------------------------------------
+
     /**
      * @brief Denoted as \f$ S \f$ throughout the documentation.
      *
@@ -56,6 +62,62 @@ public:
      * The generalized forces are designed to achieve the related scalar tasks.
      */
     virtual Vector generalizedForces(const State& s) const = 0;
+
+
+    // -------------------------------------------------------------------------
+    // Member functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * @brief This quantity is denoted as \f$ \bar{J}_{pt} \in \mathbf{R}^{n
+     * \times S} \f$, where \f$n\f$ is the number of degrees of freedom of the
+     * Model, and \f$S\f$ is the number of scalar tasks in this Task.
+     *
+     * This Matrix is computed via:
+     *
+     * \f[
+     * \bar{J}_{pt} = A^{-1} J_{pt}^T \Lambda_{pt}
+     * \f]
+     *
+     * where:
+     * - \f$ A \in \mathbf{R}^{n \times n} \f$ is the system's mass matrix (in
+     *   generalized coordinates).
+     * - \f$ J_{pt} \f$ is this Task's jacobian (see related method).
+     * - \f$ \Lambda_{pt} \f$ is this Task's task-space mass matrix (see
+     *   related method).
+     *
+     */
+    Matrix dynamicallyConsistentJacobianInverse(const State& s);
+
+    /**
+     * @brief This quantity is denoted as \f$ \Lambda_{pt} \in \mathbf{R}^{S
+     * \times S} \f$, where \f$S\f$ is the number of scalar tasks in this Task.
+     *
+     * Ths Matrix is computed via:
+     *
+     * \f[
+     * \Lambda_p = (J_{pt} A^{-1} J_{pt}^T)^{-1}
+     * \f]
+     *
+     * where:
+     * - \f$ A \in \mathbf{R}^{n \times n} \f$ is the system's mass matrix (in
+     *   the \f$ n \f$ generalized coordinates).
+     * - \f$ J_{pt} \f$ is this Task's jacobian (see related method).
+     */
+    Matrix taskSpaceMassMatrix(const State& s);
+
+private:
+
+    void setModel(const Model& model)
+    {
+        m_model = model;
+        m_smss = m_model.getMatterSubsystem();
+    }
+
+    const Model& m_model;
+    const SimbodyMatterSubsystem& m_smss;
+
+    friend class TaskSpace::PriorityLevel;
 
 };
 

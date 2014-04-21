@@ -38,9 +38,12 @@ public:
             "All the tasks in this priority level.");
     /**@}**/
 
-    PriorityLevel();
+    PriorityLevel() { }
 
-public:
+
+    // -------------------------------------------------------------------------
+    // Methods used by the TaskSpace::Controller
+    // -------------------------------------------------------------------------
 
     /**
      * @brief This quantity is denoted as \f$ \Gamma_p \in \mathbf{R}^n \f$.
@@ -85,6 +88,11 @@ public:
      *
      */
     Matrix nullspaceProjection(const State& s);
+
+
+    // -------------------------------------------------------------------------
+    // Member functions
+    // -------------------------------------------------------------------------
 
     /**
      * @brief This quantity is denoted as \f$ J_p \in \mathbf{R}^{S \times
@@ -145,10 +153,28 @@ public:
      *
      * where:
      * - \f$ A \in \mathbf{R}^{n \times n} \f$ is the system's mass matrix (in
-     *   generalized coordinates).
+     *   the \f$ n \f$ generalized coordinates).
      * - \f$ J_p \f$ is this PriorityLevel's jacobian (see related method).
      */
     Matrix taskSpaceMassMatrix(const State& s);
+
+private:
+
+    void setModel(const Model& model)
+    {
+        m_model = model;
+        m_smss = m_model.getMatterSubsystem();
+
+        for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
+        {
+            get_tasks().upd(iT).setModel(model);
+        }
+    }
+
+    const Model& m_model;
+    const SimbodyMatterSubsystem& m_smss;
+
+    friend class TaskSpace::Controller;
 
 };
 

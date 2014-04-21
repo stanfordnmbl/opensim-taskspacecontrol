@@ -5,6 +5,14 @@ set(FILES
     RegisterTypes_osimTaskSpaceControl.h
     Controller.cpp
     Controller.h
+    PriorityLevel.cpp
+    PriorityLevel.h
+    PriorityLevelSet.h
+    Task.h
+    TaskSet.h
+    StationTask.h
+    StationTrackingTask.h
+    ConstantStationTrackingTask.h
     )
 add_library(osimTaskSpaceControl SHARED ${FILES})
 target_link_libraries(osimTaskSpaceControl ${OPENSIMSIMBODY_LIBRARIES})

@@ -6,10 +6,6 @@ using SimTK::Vector;
 
 using OpenSim::TaskSpace;
 
-PriorityLevel::PriorityLevel()
-{
-}
-
 Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
 {
     Vector levelGenForces(getNumScalarTasks());

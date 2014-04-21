@@ -2,6 +2,7 @@
 #define OPENSIM_TASKSPACE_CONTROLLER_H_
 
 #include <OpenSim/Simulation/Control/Controller.h>
+#include "PriorityLevelSet.h"
 #include "osimTaskSpaceControlDLL.h"
 
 namespace OpenSim {
@@ -109,10 +110,19 @@ class OSIMTASKSPACECONTROL_API Controller : public OpenSim::Controller
 OpenSim_DECLARE_CONCRETE_OBJECT(Controller, OpenSim::Controller);
 
 public:
+
+    OpenSim_DECLARE_PROPERTY(priority_levels, TaskSpace::PriorityLevelSet,
+            "The PriorityLevel's that define this Controller. The priority of "
+            "the levels is given by their index in the set. The first item "
+            "in the set is the highest priority.");
+
+    Controller() { }
+
     virtual void computeControls(const SimTK::State& s,
             SimTK::Vector& controls) const;
 
 protected:
+
     void connectToModel(Model& model) OVERRIDE_11;
 
 };

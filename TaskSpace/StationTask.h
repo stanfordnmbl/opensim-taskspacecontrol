@@ -47,7 +47,7 @@ public:
 
 
     // -------------------------------------------------------------------------
-    // StationTask interface
+    // Specification of StationTask interface
     // -------------------------------------------------------------------------
 
     /**
@@ -64,7 +64,7 @@ public:
     virtual Vec3 controlLaw(const State& s) const = 0;
 
     // -------------------------------------------------------------------------
-    // Task interface
+    // Implementation of Task interface
     // -------------------------------------------------------------------------
 
     unsigned int getNumScalarTasks() const OVERRIDE_11 final { return 3; }
@@ -128,9 +128,9 @@ public:
     // -------------------------------------------------------------------------
 
     /**
-     * @brief Position of the station, expressed in the ground frame.
+     * @brief Location of the station, expressed in the ground frame.
      */
-    Vec3 positionOfStationExpressedInGround(const State& s) const
+    Vec3 locationOfStationExpressedInGround(const State& s) const
     {
         return m_smss.findStationLocationInGround(s, get_location_in_body());
     }
