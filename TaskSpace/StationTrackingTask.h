@@ -1,6 +1,10 @@
 #ifndef OPENSIM_TASKSPACE_STATIONTRACKINGTASK_H_
 #define OPENSIM_TASKSPACE_STATIONTRACKINGTASK_H_
 
+#include "osimTaskSpaceControlDLL.h"
+
+#include "Task.h"
+
 namespace OpenSim {
 
 namespace TaskSpace {
@@ -8,7 +12,7 @@ namespace TaskSpace {
 /**
  * TODO
  */
-class OSIMTASKSPACE_API StationTrackingTask : public TaskSpace::Task
+class OSIMTASKSPACECONTROL_API StationTrackingTask : public TaskSpace::StationTask
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(StationTrackingTask, TaskSpace::Task);
 public:
@@ -20,6 +24,9 @@ public:
     OpenSim_DECLARE_PROPERTY(derivative_gain, double,
             "Derivative gain (kd).");
     /**@}**/
+
+
+    StationTrackingTask() { }
 
 
     // -------------------------------------------------------------------------

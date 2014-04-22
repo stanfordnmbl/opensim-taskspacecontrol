@@ -1,6 +1,10 @@
 #ifndef OPENSIM_TASKSPACE_PRIORITYLEVEL_H_
 #define OPENSIM_TASKSPACE_PRIORITYLEVEL_H_
 
+#include <OpenSim/Common/Object.h>
+#include "TaskSet.h"
+#include "osimTaskSpaceControlDLL.h"
+
 using SimTK::State;
 using SimTK::Matrix;
 using SimTK::Vector;
@@ -8,6 +12,8 @@ using SimTK::Vector;
 namespace OpenSim {
 
 namespace TaskSpace {
+
+class Controller;
 
 /**
  * A PriorityLevel, identified by its index \f$ p \f$, must be able to compute
@@ -27,7 +33,7 @@ namespace TaskSpace {
  * See the corresponding methods for more information.
  *
  */
-class OSIMTASKSPACE_API PriorityLevel : public OpenSim::Object
+class OSIMTASKSPACECONTROL_API PriorityLevel : public OpenSim::Object
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(PriorityLevel, OpenSim::Object);
 
@@ -38,7 +44,7 @@ public:
             "All the tasks in this priority level.");
     /**@}**/
 
-    PriorityLevel() { }
+    PriorityLevel();
 
 
     // -------------------------------------------------------------------------
@@ -117,7 +123,7 @@ public:
      *
      * \f]
      */
-    Matrix jacobian(const State&s s);
+    Matrix jacobian(const State& s);
 
     /**
      * @brief This quantity is denoted as \f$ \bar{J}_p \in \mathbf{R}^{n
@@ -162,19 +168,22 @@ private:
 
     void setModel(const Model& model)
     {
-        m_model = model;
-        m_smss = m_model.getMatterSubsystem();
+        m_model = &model;
+        m_smss = &model.getMatterSubsystem();
 
         for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
         {
-            get_tasks().upd(iT).setModel(model);
+            get_tasks().get(iT).setModel(model);
         }
     }
 
-    const Model& m_model;
-    const SimbodyMatterSubsystem& m_smss;
+    const Model* m_model;
+    const SimbodyMatterSubsystem* m_smss;
 
     friend class TaskSpace::Controller;
+
+    void setNull();
+    void constructProperties();
 
 };
 

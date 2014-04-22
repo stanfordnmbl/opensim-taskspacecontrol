@@ -1,6 +1,12 @@
 #ifndef OPENSIM_TASKSPACE_TASK_H_
 #define OPENSIM_TASKSPACE_TASK_H_
 
+#include <OpenSim/Simulation/Model/Model.h>
+#include "PriorityLevel.h"
+#include "osimTaskSpaceControlDLL.h"
+
+
+using SimTK::SimbodyMatterSubsystem;
 using SimTK::State;
 using SimTK::Matrix;
 using SimTK::Vector;
@@ -14,6 +20,8 @@ namespace OpenSim {
 
 namespace TaskSpace {
 
+class PriorityLevel;
+
 /**
  * @brief This object contains a number of scalar tasks (total of \f$ S \f$).
  *
@@ -24,13 +32,16 @@ namespace TaskSpace {
  * the generalized forces detail how the task is achieved.
  *
  */
-class OSIMTASKSPACE_API Task : public OpenSim::Object
+class OSIMTASKSPACECONTROL_API Task : public OpenSim::Object
 {
 OpenSim_DECLARE_ABSTRACT_OBJECT(Task, OpenSim::Object);
 
 public:
 
-    Task() { }
+    Task()
+    {
+        setNull();
+    }
 
     // -------------------------------------------------------------------------
     // Specification of Task interface
@@ -106,18 +117,26 @@ public:
      */
     Matrix taskSpaceMassMatrix(const State& s);
 
+protected:
+
+    const Model* m_model;
+    const SimbodyMatterSubsystem* m_smss;
+
 private:
 
     void setModel(const Model& model)
     {
-        m_model = model;
-        m_smss = m_model.getMatterSubsystem();
+        m_model = &model;
+        m_smss = &model.getMatterSubsystem();
     }
 
-    const Model& m_model;
-    const SimbodyMatterSubsystem& m_smss;
+    friend class PriorityLevel;
 
-    friend class TaskSpace::PriorityLevel;
+    void setNull()
+    {
+        m_model = NULL;
+        m_smss = NULL;
+    }
 
 };
 

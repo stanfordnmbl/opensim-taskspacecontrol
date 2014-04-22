@@ -1,6 +1,13 @@
 #ifndef OPENSIM_TASKSPACE_STATIONTASK_H_
 #define OPENSIM_TASKSPACE_STATIONTASK_H_
 
+#include "osimTaskSpaceControlDLL.h"
+
+#include "Task.h"
+
+using std::string;
+using SimTK::Vec3;
+
 namespace OpenSim {
 
 namespace TaskSpace {
@@ -30,20 +37,23 @@ namespace TaskSpace {
  * task with the rest of the task-space controller.
  *
  */
-class OSIMTASKSPACE_API StationTask : public TaskSpace::Task
+class OSIMTASKSPACECONTROL_API StationTask : public TaskSpace::Task
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(StationTask, TaskSpace::Task);
 public:
 
     /** @name Property declarations */
     /**@{**/
-    OpenSim_DECLARE_PROPERTY(body_name, string, "The name of the body "
-            "on which the station resides.");
-    OpenSim_DECLARE_PROPERTY(location_on_body, Vec3, "Expressed in the "
-            "body frame.");
+    OpenSim_DECLARE_PROPERTY(body_name, string,
+            "The name of the body on which the station resides.");
+    OpenSim_DECLARE_PROPERTY(location_in_body, Vec3,
+            "Expressed in the body frame.");
     // TODO compensateForQuadraticVelocity
     // TODO compensateForGravity
     /**@}**/
+
+
+    StationTask() { }
 
 
     // -------------------------------------------------------------------------
@@ -132,7 +142,7 @@ public:
      */
     Vec3 locationOfStationExpressedInGround(const State& s) const
     {
-        return m_smss.findStationLocationInGround(s, get_location_in_body());
+        return m_smss->findStationLocationInGround(s, get_location_in_body());
     }
 
     /**
@@ -141,7 +151,7 @@ public:
      */
     Vec3 velocityOfStationInGroundExpressedInGround(const State& s) const
     {
-        return m_smss.findStationVelocityInGround(s, get_location_in_body());
+        return m_smss->findStationVelocityInGround(s, get_location_in_body());
     }
 
 };

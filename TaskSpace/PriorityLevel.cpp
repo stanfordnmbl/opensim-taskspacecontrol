@@ -1,10 +1,29 @@
 #include "PriorityLevel.h"
 
+#include "TaskSet.h"
+
 using SimTK::Matrix;
 using SimTK::State;
 using SimTK::Vector;
 
-using OpenSim::TaskSpace;
+using namespace OpenSim;
+
+TaskSpace::PriorityLevel::PriorityLevel()
+{
+    setNull();
+    constructProperties();
+}
+
+void TaskSpace::PriorityLevel::setNull()
+{
+    m_model = NULL;
+    m_smss = NULL;
+}
+
+void TaskSpace::PriorityLevel::constructProperties()
+{
+    constructProperty_tasks(TaskSet());
+}
 
 Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
 {

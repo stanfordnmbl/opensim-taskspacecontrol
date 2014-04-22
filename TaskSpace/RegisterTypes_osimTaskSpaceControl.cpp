@@ -26,6 +26,12 @@
 #include "RegisterTypes_osimTaskSpaceControl.h"
 
 #include "Controller.h"
+#include "PriorityLevel.h"
+#include "PriorityLevelSet.h"
+#include "TaskSet.h"
+#include "StationTask.h"
+#include "StationTrackingTask.h"
+#include "ConstantStationTrackingTask.h"
 
 using namespace OpenSim;
 using namespace std;
@@ -42,7 +48,6 @@ OSIMTASKSPACECONTROL_API void RegisterTypes_osimTaskSpaceControl()
 	Object::RegisterType( TaskSpace::Controller() );
     Object::RegisterType( TaskSpace::PriorityLevel() );
     Object::RegisterType( TaskSpace::PriorityLevelSet() );
-    Object::RegisterType( TaskSpace::Task() );
     Object::RegisterType( TaskSpace::TaskSet() );
     Object::RegisterType( TaskSpace::StationTask() );
     Object::RegisterType( TaskSpace::StationTrackingTask() );
