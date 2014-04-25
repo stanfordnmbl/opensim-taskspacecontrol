@@ -2,6 +2,9 @@
 
 #include "TaskSet.h"
 
+#include <OpenSim/Simulation/Model/Model.h>
+
+using SimTK::FactorLU;
 using SimTK::Matrix;
 using SimTK::State;
 using SimTK::Vector;
@@ -43,7 +46,7 @@ Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
 
         STidx += nST;
     }
-    return generalizedForces;
+    return levelGenForces;
 }
 
 Matrix TaskSpace::PriorityLevel::nullspaceProjection(const State& s)
@@ -56,7 +59,7 @@ Matrix TaskSpace::PriorityLevel::nullspaceProjection(const State& s)
     return identity - dynamicallyConsistentJacobianInverse(s) * jacobian(s);
 }
 
-Matrix TaskSpace::PriorityLevel::jacobian(const State&s s)
+Matrix TaskSpace::PriorityLevel::jacobian(const State& s)
 {
     Matrix levelJacobian(getNumScalarTasks(), s.getNU());
 
@@ -88,9 +91,9 @@ Matrix TaskSpace::PriorityLevel::dynamicallyConsistentJacobianInverse(
     // ------------------
     Matrix dynConsistentJacobianInverse(s.getNU(), getNumScalarTasks());
 
-    for (unsigned int iST = 0; iST < get_tasks().getSize(); iST++)
+    for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
     {
-        m_smss.multiplyByMInv(s,
+        m_smss->multiplyByMInv(s,
                 jacobianTransposeTimesLambda.col(iST),
                 dynConsistentJacobianInverse.updCol(iST));
     }
@@ -102,32 +105,44 @@ Matrix TaskSpace::PriorityLevel::taskSpaceMassMatrix(const State& s)
 {
     // A^{-1} J^T
     // -------------
-    Matrix jacobian = jacobian(s);
-    Matrix jacobianTranspose = jacobian.transpose();
+    Matrix jac = jacobian(s);
+    Matrix jacobianTranspose = jac.transpose();
     Matrix systemMassMatrixInverseTimesJacobianTranspose(
             s.getNU(), getNumScalarTasks());
 
     for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
     {
-        m_smss.multiplyByMInv(s, jacobianTranspose.col(iST),
+        m_smss->multiplyByMInv(s, jacobianTranspose.col(iST),
             systemMassMatrixInverseTimesJacobianTranspose.updCol(iST));
     }
 
     // J A^{-1} J^T
     // -------------
     Matrix taskMassMatrixInverse =
-        jacobian * systemMassMatrixInverseTimesJacobianTranspose;
+        jac * systemMassMatrixInverseTimesJacobianTranspose;
 
     // (J A^{-1} J^T)^{-1}
     // -------------------
     // TODO compute inverse in a different way; this feels messy.
     FactorLU taskMassMatrixInverseLU(taskMassMatrixInverse);
-    Matrix taskMassMatrix(s.getNumScalarTasks(), s.getNumScalarTasks());
+    Matrix taskMassMatrix(getNumScalarTasks(), getNumScalarTasks());
     taskMassMatrixInverseLU.inverse(taskMassMatrix);
 
     return taskMassMatrix;
 }
 
+void TaskSpace::PriorityLevel::setModel(const Model& model)
+{
+    m_model = &model;
+    m_smss = &model.getMatterSubsystem();
+
+    m_numScalarTasks = 0;
+    for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
+    {
+        get_tasks().get(iT).setModel(model);
+        m_numScalarTasks += get_tasks().get(iT).getNumScalarTasks();
+    }
+}
 
 
 

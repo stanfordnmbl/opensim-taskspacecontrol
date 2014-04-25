@@ -5,11 +5,50 @@
 
 #include <OpenSim/OpenSim.h>
 
+#include <TaskSpace/Controller.h>
+
 using namespace OpenSim;
 using namespace SimTK;
 
 int main()
 {
+    // Instantiate objects.
+    // --------------------
+    Model model("fourlinks.osim");
+    TaskSpace::Controller * controller = new TaskSpace::Controller();
+    controller->setName("goal_position");
+    controller->setActuators(model.updActuators());
+    model.addController(controller);
+
+    /**
+    // Define the goal position task.
+    // ------------------------------
+    RRRGoalPositionTask * goalPosition;
+    goalPosition->set_body_name("link3");
+    goalPosition->set_position_on_body(Vec3(1.0, 0.0, 0.0));
+    PriorityLevel& priorityLevel = controller->getPriorityLevelSet().get(0);
+    priorityLevel.updTaskSet().adoptAndAppend(goalPosition);
+
+    // Prepare to simulate.
+    // --------------------
+    State& initState = model.initSystem();
+    RungeKuttaMersonIntegrator integrator(model.getMultibodySystem());
+    Manager manager(model, integrator);
+    manager.setInitialTime(0.0);
+    manager.setFinalTime(5.0);
+    model.printDetailedInfo(initState, std::cout);
+
+    // Simulate.
+    // ---------
+    manager.integrate(initState);
+
+    // Save data.
+    // ----------
+    model.printControlStorage("testRRR_controls.sto");
+    manager.getStateStorage().print("testRRR_states.sto");
+    */
+
+    model.print("fourlinks_with_controller.osim");
 }
 
 /***

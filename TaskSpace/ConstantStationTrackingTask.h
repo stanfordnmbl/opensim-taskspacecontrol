@@ -1,9 +1,9 @@
 #ifndef OPENSIM_TASKSPACE_CONSTANTSTATIONTRACKINGTASK_H_
 #define OPENSIM_TASKSPACE_CONSTANTSTATIONTRACKINGTASK_H_
 
-#include "osimTaskSpaceControlDLL.h"
+#include "StationTrackingTask.h"
 
-#include "Task.h"
+#include "osimTaskSpaceControlDLL.h"
 
 using SimTK::Vec3;
 
@@ -14,8 +14,8 @@ namespace TaskSpace {
 /**
  * TODO
  */
-class OSIMTASKSPACECONTROL_API ConstantStationTrackingTask : public
-                                                             TaskSpace::StationTrackingTask
+class OSIMTASKSPACECONTROL_API ConstantStationTrackingTask : 
+    public TaskSpace::StationTrackingTask
 {
 OpenSim_DECLARE_CONCRETE_OBJECT(ConstantStationTrackingTask, TaskSpace::Task);
 public:
@@ -34,7 +34,7 @@ public:
     // Implementation of StationTrackingTask interface
     // -------------------------------------------------------------------------
 
-    Vec3 desiredLocation(const State& s) const OVERRIDE_11 final
+    virtual Vec3 desiredLocation(const State& s) const OVERRIDE_11 final
     {
         return get_desired_location();
     }

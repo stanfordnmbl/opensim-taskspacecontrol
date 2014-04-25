@@ -8,8 +8,10 @@ set(FILES
     PriorityLevel.cpp
     PriorityLevel.h
     PriorityLevelSet.h
+    Task.cpp
     Task.h
     TaskSet.h
+    StationTask.cpp
     StationTask.h
     StationTrackingTask.h
     ConstantStationTrackingTask.h

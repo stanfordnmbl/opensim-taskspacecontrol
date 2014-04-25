@@ -2,9 +2,7 @@
 #define OPENSIM_TASKSPACE_TASK_H_
 
 #include <OpenSim/Simulation/Model/Model.h>
-#include "PriorityLevel.h"
 #include "osimTaskSpaceControlDLL.h"
-
 
 using SimTK::SimbodyMatterSubsystem;
 using SimTK::State;
@@ -78,6 +76,8 @@ public:
     // -------------------------------------------------------------------------
     // Member functions
     // -------------------------------------------------------------------------
+    // TODO the existence of these methods in Task indicates that
+    // PriorityLevel should just be a CompositeTask.
 
     /**
      * @brief This quantity is denoted as \f$ \bar{J}_{pt} \in \mathbf{R}^{n
@@ -98,7 +98,7 @@ public:
      *   related method).
      *
      */
-    Matrix dynamicallyConsistentJacobianInverse(const State& s);
+    Matrix dynamicallyConsistentJacobianInverse(const State& s) const;
 
     /**
      * @brief This quantity is denoted as \f$ \Lambda_{pt} \in \mathbf{R}^{S
@@ -107,7 +107,7 @@ public:
      * Ths Matrix is computed via:
      *
      * \f[
-     * \Lambda_p = (J_{pt} A^{-1} J_{pt}^T)^{-1}
+     * \Lambda_{pt} = (J_{pt} A^{-1} J_{pt}^T)^{-1}
      * \f]
      *
      * where:
@@ -115,20 +115,45 @@ public:
      *   the \f$ n \f$ generalized coordinates).
      * - \f$ J_{pt} \f$ is this Task's jacobian (see related method).
      */
-    Matrix taskSpaceMassMatrix(const State& s);
+    Matrix taskSpaceMassMatrix(const State& s) const;
+
+    /**
+     * @brief \f$ \mu_{pt} = \bar{J}^T b - \Lambda_{pt} \dot{J}_{pt} \dot{q}
+     * \in \mathbf{R}^3 \f$.  
+     *
+     * where:
+     * - \f$ b \f$ is the quadratic velocity vector for the whole system, in
+     *   generalized coordinates.
+     * - \f$ \Lambda_{pt} \f$ is the task space mass matrix of this task.
+     * - \f$ \dot{J}_{pt} \f$ is the derivative of this Tasks' jacobian.
+     * - \f$ q \f$ is the generalized coordinates.
+     *
+     * Used in taskSpaceForce().
+     */
+    Vector taskSpaceQuadraticVelocity(const State& s) const;
+
+    /**
+     * @brief \f$ p_{pt} = \bar{J}^T g \in \mathbf{R}^3 \f$.
+     *
+     * where \f$g\f$ is the gravity vector for the whole system, in generalized
+     * coordinates.
+     *
+     * Used in taskSpaceForce().
+     */
+    Vector taskSpaceGravity(const State& s) const;
 
 protected:
+
+    virtual void setModel(const Model& model)
+    {
+        m_model = &model;
+        m_smss = &model.getMatterSubsystem();
+    }
 
     const Model* m_model;
     const SimbodyMatterSubsystem* m_smss;
 
 private:
-
-    void setModel(const Model& model)
-    {
-        m_model = &model;
-        m_smss = &model.getMatterSubsystem();
-    }
 
     friend class PriorityLevel;
 

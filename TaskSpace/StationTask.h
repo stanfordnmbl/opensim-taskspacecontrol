@@ -1,11 +1,15 @@
 #ifndef OPENSIM_TASKSPACE_STATIONTASK_H_
 #define OPENSIM_TASKSPACE_STATIONTASK_H_
 
-#include "osimTaskSpaceControlDLL.h"
+#include <OpenSim/Simulation/Model/Model.h>
+#include <OpenSim/Simulation/Model/BodySet.h>
 
 #include "Task.h"
 
+#include "osimTaskSpaceControlDLL.h"
+
 using std::string;
+using SimTK::MobilizedBodyIndex;
 using SimTK::Vec3;
 
 namespace OpenSim {
@@ -39,7 +43,7 @@ namespace TaskSpace {
  */
 class OSIMTASKSPACECONTROL_API StationTask : public TaskSpace::Task
 {
-OpenSim_DECLARE_CONCRETE_OBJECT(StationTask, TaskSpace::Task);
+OpenSim_DECLARE_ABSTRACT_OBJECT(StationTask, TaskSpace::Task);
 public:
 
     /** @name Property declarations */
@@ -105,32 +109,7 @@ public:
      * achieves the control law and also compensates for the dynamics of the
      * system.
      */
-    Vec3 taskSpaceForce(State& s) const;
-
-    /**
-     * @brief \f$ \mu_{pt} = \bar{J}^T b - \Lambda_{pt} \dot{J}_{pt} \dot{q}
-     * \in \mathbf{R}^3 \f$.  
-     *
-     * where:
-     * - \f$ b \f$ is the quadratic velocity vector for the whole system, in
-     *   generalized coordinates.
-     * - \f$ \Lambda_{pt} \f$ is the task space mass matrix of this task.
-     * - \f$ \dot{J}_{pt} \f$ is the derivative of this Tasks' jacobian.
-     * - \f$ q \f$ is the generalized coordinates.
-     *
-     * Used in taskSpaceForce().
-     */
-    Vec3 taskSpaceQuadraticVelocityCompensation(const State& s) const;
-
-    /**
-     * @brief \f$ p_{pt} = \bar{J}^T g \in \mathbf{R}^3 \f$.
-     *
-     * where \f$g\f$ is the gravity vector for the whole system, in generalized
-     * coordinates.
-     *
-     * Used in taskSpaceForce().
-     */
-    Vec3 taskSpaceGravityCompensation(const State& s) const;
+    Vec3 taskSpaceForce(const State& s) const;
 
 
     // -------------------------------------------------------------------------
@@ -142,7 +121,10 @@ public:
      */
     Vec3 locationOfStationExpressedInGround(const State& s) const
     {
-        return m_smss->findStationLocationInGround(s, get_location_in_body());
+        Vec3 locationExpressedInGround;
+        m_engine->getPosition(s, m_model->getBodySet().get(get_body_name()),
+                get_location_in_body(), locationExpressedInGround);
+        return locationExpressedInGround;
     }
 
     /**
@@ -151,8 +133,24 @@ public:
      */
     Vec3 velocityOfStationInGroundExpressedInGround(const State& s) const
     {
-        return m_smss->findStationVelocityInGround(s, get_location_in_body());
+        Vec3 velocityInGroundExpressedInGround;
+        m_engine->getVelocity(s, m_model->getBodySet().get(get_body_name()),
+                get_location_in_body(), velocityInGroundExpressedInGround);
+        return velocityInGroundExpressedInGround;
     }
+
+private:
+
+    virtual void setModel(const Model& model)
+    {
+        Super::setModel(model);
+        m_engine = &model.getSimbodyEngine();
+        m_mobilizedBodyIndex =
+            model.getBodySet().get(get_body_name()).getIndex();
+    }
+
+    const SimbodyEngine* m_engine;
+    MobilizedBodyIndex m_mobilizedBodyIndex;
 
 };
 

@@ -1,13 +1,27 @@
 #include "Controller.h"
 
+#include "PriorityLevelSet.h"
+
+using std::string;
+
 using SimTK::Matrix;
 using SimTK::State;
 using SimTK::Vector;
 
 using namespace OpenSim;
 
+TaskSpace::Controller::Controller()
+{
+    constructProperties();
+}
+
+void TaskSpace::Controller::constructProperties()
+{
+    constructProperty_priority_levels(PriorityLevelSet());
+}
+
 void TaskSpace::Controller::computeControls(const State& s,
-        Vector& controls) const
+        Vector& controls) const OVERRIDE_11
 {
     // The control vector.
     // -------------------
@@ -16,14 +30,14 @@ void TaskSpace::Controller::computeControls(const State& s,
     // We compute the inner parentheses first. This is like how it's more
     // efficient to compute the polynomial a + bx + cx^2 + dx^3 as:
     //      a + x(b + x(c + xd))
-    Vector generalizedForces(_numCoords);
+    Vector generalizedForces(s.getNU());
     generalizedForces.setToZero();
 
     for (unsigned int iP = get_priority_levels().getSize() - 1; iP > 0; iP--)
     {
         Matrix NT =
             get_priority_levels().get(iP - 1).nullspaceProjection(s).transpose();
-        Vector Gamma_iP = get_priority_levels().get(iP).generalizedForce(s);
+        Vector Gamma_iP = get_priority_levels().get(iP).generalizedForces(s);
 
         generalizedForces = NT * (Gamma_iP + generalizedForces);
     }
@@ -31,7 +45,7 @@ void TaskSpace::Controller::computeControls(const State& s,
     // The highest-priority level doesn't get filtered by a nullspace
     // projection.
     generalizedForces =
-        get_priority_levels().get(0).generalizedForce() + generalizedForces;
+        get_priority_levels().get(0).generalizedForces(s) + generalizedForces;
 
     // Send control signals to CoordinateActuator's.
     // ---------------------------------------------
@@ -60,6 +74,7 @@ void TaskSpace::Controller::connectToModel(Model& model)
 
     for (unsigned int iP = 0; iP < get_priority_levels().getSize(); iP++)
     {
-        get_priority_levels().upd(iP).setModel(model);
+        // TODO rename setModel methods.
+        get_priority_levels().get(iP).setModel(model);
     }
 }

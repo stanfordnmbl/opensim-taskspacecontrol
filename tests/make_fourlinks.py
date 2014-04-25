@@ -4,7 +4,7 @@ from opensim import Model, Body, PlanarJoint, PinJoint, Vec3, \
 from numpy import pi
 
 linkage = Model()
-linkage.setName('threelink')
+linkage.setName('fourlinks')
 
 
 # Bodies.
@@ -113,4 +113,4 @@ linkage.addForce(act2)
 linkage.addForce(act3)
 linkage.addForce(act4)
 
-linkage.printToXML('threelinks.osim')
+linkage.printToXML('fourlinks.osim')

@@ -1,9 +1,9 @@
 #ifndef OPENSIM_TASKSPACE_STATIONTRACKINGTASK_H_
 #define OPENSIM_TASKSPACE_STATIONTRACKINGTASK_H_
 
-#include "osimTaskSpaceControlDLL.h"
+#include "StationTask.h"
 
-#include "Task.h"
+#include "osimTaskSpaceControlDLL.h"
 
 namespace OpenSim {
 
@@ -14,7 +14,7 @@ namespace TaskSpace {
  */
 class OSIMTASKSPACECONTROL_API StationTrackingTask : public TaskSpace::StationTask
 {
-OpenSim_DECLARE_CONCRETE_OBJECT(StationTrackingTask, TaskSpace::Task);
+OpenSim_DECLARE_ABSTRACT_OBJECT(StationTrackingTask, TaskSpace::Task);
 public:
 
     /** @name Property declarations */

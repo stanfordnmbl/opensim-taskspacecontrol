@@ -107,23 +107,30 @@ namespace TaskSpace {
  */
 class OSIMTASKSPACECONTROL_API Controller : public OpenSim::Controller
 {
-OpenSim_DECLARE_CONCRETE_OBJECT(Controller, OpenSim::Controller);
+    // TODO use full namespaces?
+OpenSim_DECLARE_CONCRETE_OBJECT(OpenSim::TaskSpace::Controller, OpenSim::Controller);
 
 public:
 
-    OpenSim_DECLARE_PROPERTY(priority_levels, TaskSpace::PriorityLevelSet,
+    OpenSim_DECLARE_PROPERTY(priority_levels, OpenSim::TaskSpace::PriorityLevelSet,
             "The PriorityLevel's that define this Controller. The priority of "
             "the levels is given by their index in the set. The first item "
             "in the set is the highest priority.");
 
-    Controller() { }
+
+    Controller();
+
 
     virtual void computeControls(const SimTK::State& s,
-            SimTK::Vector& controls) const;
+            SimTK::Vector& controls) const OVERRIDE_11;
 
 protected:
 
     void connectToModel(Model& model) OVERRIDE_11;
+
+private:
+
+    void constructProperties();
 
 };
 

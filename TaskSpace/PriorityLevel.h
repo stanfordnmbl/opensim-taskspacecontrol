@@ -2,14 +2,18 @@
 #define OPENSIM_TASKSPACE_PRIORITYLEVEL_H_
 
 #include <OpenSim/Common/Object.h>
+#include <OpenSim/Common/Property.h>
 #include "TaskSet.h"
 #include "osimTaskSpaceControlDLL.h"
 
+using SimTK::SimbodyMatterSubsystem;
 using SimTK::State;
 using SimTK::Matrix;
 using SimTK::Vector;
 
 namespace OpenSim {
+
+class Model;
 
 namespace TaskSpace {
 
@@ -43,6 +47,7 @@ public:
     OpenSim_DECLARE_PROPERTY(tasks, TaskSpace::TaskSet,
             "All the tasks in this priority level.");
     /**@}**/
+
 
     PriorityLevel();
 
@@ -99,6 +104,14 @@ public:
     // -------------------------------------------------------------------------
     // Member functions
     // -------------------------------------------------------------------------
+
+    /**
+     * TODO
+     */
+    unsigned int getNumScalarTasks() const
+    {
+        return m_numScalarTasks;
+    }
 
     /**
      * @brief This quantity is denoted as \f$ J_p \in \mathbf{R}^{S \times
@@ -166,19 +179,12 @@ public:
 
 private:
 
-    void setModel(const Model& model)
-    {
-        m_model = &model;
-        m_smss = &model.getMatterSubsystem();
-
-        for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
-        {
-            get_tasks().get(iT).setModel(model);
-        }
-    }
+    void setModel(const Model& model);
 
     const Model* m_model;
     const SimbodyMatterSubsystem* m_smss;
+
+    unsigned int m_numScalarTasks;
 
     friend class TaskSpace::Controller;
 
