@@ -13,6 +13,7 @@ set(FILES
     TaskSet.h
     StationTask.cpp
     StationTask.h
+    StationTrackingTask.cpp
     StationTrackingTask.h
     ConstantStationTrackingTask.cpp
     ConstantStationTrackingTask.h

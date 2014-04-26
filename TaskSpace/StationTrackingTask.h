@@ -27,10 +27,7 @@ public:
     /**@}**/
 
 
-    StationTrackingTask() {
-        constructProperty_proportional_gain(100);
-        constructProperty_derivative_gain(20); 
-    }
+    StationTrackingTask();
 
 
     // -------------------------------------------------------------------------
@@ -65,6 +62,10 @@ public:
             get_proportional_gain() * (desiredLocation(s) -
                     locationOfStationExpressedInGround(s));
     }
+
+private:
+
+    void constructProperties();
 
 };
 

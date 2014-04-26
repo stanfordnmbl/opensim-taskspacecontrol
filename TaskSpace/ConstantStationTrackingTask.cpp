@@ -11,5 +11,5 @@ TaskSpace::ConstantStationTrackingTask::ConstantStationTrackingTask()
 
 void TaskSpace::ConstantStationTrackingTask::constructProperties()
 {
-    constructProperty_desired_location(Vec3());
+    constructProperty_desired_location(Vec3(0));
 }
