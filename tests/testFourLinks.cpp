@@ -6,6 +6,10 @@
 #include <OpenSim/OpenSim.h>
 
 #include <TaskSpace/Controller.h>
+#include <TaskSpace/TaskSet.h>
+#include <TaskSpace/ConstantStationTrackingTask.h>
+#include <TaskSpace/PriorityLevel.h>
+#include <TaskSpace/PriorityLevelSet.h>
 
 using namespace OpenSim;
 using namespace SimTK;
@@ -20,14 +24,16 @@ int main()
     controller->setActuators(model.updActuators());
     model.addController(controller);
 
-    /**
     // Define the goal position task.
     // ------------------------------
-    RRRGoalPositionTask * goalPosition;
+    TaskSpace::ConstantStationTrackingTask * goalPosition =
+        new TaskSpace::ConstantStationTrackingTask();
     goalPosition->set_body_name("link3");
-    goalPosition->set_position_on_body(Vec3(1.0, 0.0, 0.0));
-    PriorityLevel& priorityLevel = controller->getPriorityLevelSet().get(0);
-    priorityLevel.updTaskSet().adoptAndAppend(goalPosition);
+    goalPosition->set_location_in_body(Vec3(1.0, 0.0, 0.0));
+    TaskSpace::PriorityLevel * priorityLevel =
+        new TaskSpace::PriorityLevel();
+    controller->upd_priority_levels().adoptAndAppend(priorityLevel);
+    priorityLevel->upd_tasks().adoptAndAppend(goalPosition);
 
     // Prepare to simulate.
     // --------------------
@@ -44,9 +50,8 @@ int main()
 
     // Save data.
     // ----------
-    model.printControlStorage("testRRR_controls.sto");
-    manager.getStateStorage().print("testRRR_states.sto");
-    */
+    model.printControlStorage("fourlinks_controls.sto");
+    manager.getStateStorage().print("fourlinks_states.sto");
 
     model.print("fourlinks_with_controller.osim");
 }

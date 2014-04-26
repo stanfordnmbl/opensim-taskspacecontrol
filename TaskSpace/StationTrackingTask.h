@@ -14,7 +14,8 @@ namespace TaskSpace {
  */
 class OSIMTASKSPACECONTROL_API StationTrackingTask : public TaskSpace::StationTask
 {
-OpenSim_DECLARE_ABSTRACT_OBJECT(StationTrackingTask, TaskSpace::Task);
+OpenSim_DECLARE_ABSTRACT_OBJECT(TaskSpace::StationTrackingTask,
+        TaskSpace::Task);
 public:
 
     /** @name Property declarations */
@@ -26,7 +27,10 @@ public:
     /**@}**/
 
 
-    StationTrackingTask() { }
+    StationTrackingTask() {
+        constructProperty_proportional_gain(100);
+        constructProperty_derivative_gain(20); 
+    }
 
 
     // -------------------------------------------------------------------------

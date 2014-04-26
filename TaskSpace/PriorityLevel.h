@@ -39,7 +39,7 @@ class Controller;
  */
 class OSIMTASKSPACECONTROL_API PriorityLevel : public OpenSim::Object
 {
-OpenSim_DECLARE_CONCRETE_OBJECT(PriorityLevel, OpenSim::Object);
+OpenSim_DECLARE_CONCRETE_OBJECT(TaskSpace::PriorityLevel, OpenSim::Object);
 
 public:
     /** @name Property declarations */

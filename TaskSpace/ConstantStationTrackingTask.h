@@ -17,7 +17,8 @@ namespace TaskSpace {
 class OSIMTASKSPACECONTROL_API ConstantStationTrackingTask : 
     public TaskSpace::StationTrackingTask
 {
-OpenSim_DECLARE_CONCRETE_OBJECT(ConstantStationTrackingTask, TaskSpace::Task);
+OpenSim_DECLARE_CONCRETE_OBJECT(TaskSpace::ConstantStationTrackingTask,
+        TaskSpace::Task);
 public:
 
     /** @name Property declarations */
@@ -27,7 +28,7 @@ public:
     /**@}**/
 
 
-    ConstantStationTrackingTask() { }
+    ConstantStationTrackingTask();
 
 
     // -------------------------------------------------------------------------
@@ -48,6 +49,10 @@ public:
     {
         return Vec3(0);
     }
+
+private:
+
+    void constructProperties();
 
 };
 

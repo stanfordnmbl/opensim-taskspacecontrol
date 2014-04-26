@@ -32,7 +32,7 @@ class PriorityLevel;
  */
 class OSIMTASKSPACECONTROL_API Task : public OpenSim::Object
 {
-OpenSim_DECLARE_ABSTRACT_OBJECT(Task, OpenSim::Object);
+OpenSim_DECLARE_ABSTRACT_OBJECT(TaskSpace::Task, OpenSim::Object);
 
 public:
 

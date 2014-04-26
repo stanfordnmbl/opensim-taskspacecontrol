@@ -43,7 +43,7 @@ namespace TaskSpace {
  */
 class OSIMTASKSPACECONTROL_API StationTask : public TaskSpace::Task
 {
-OpenSim_DECLARE_ABSTRACT_OBJECT(StationTask, TaskSpace::Task);
+OpenSim_DECLARE_ABSTRACT_OBJECT(TaskSpace::StationTask, TaskSpace::Task);
 public:
 
     /** @name Property declarations */
@@ -57,7 +57,7 @@ public:
     /**@}**/
 
 
-    StationTask() { }
+    StationTask();
 
 
     // -------------------------------------------------------------------------
@@ -151,6 +151,8 @@ private:
 
     const SimbodyEngine* m_engine;
     MobilizedBodyIndex m_mobilizedBodyIndex;
+
+    void constructProperties();
 
 };
 

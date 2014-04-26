@@ -14,6 +14,7 @@ set(FILES
     StationTask.cpp
     StationTask.h
     StationTrackingTask.h
+    ConstantStationTrackingTask.cpp
     ConstantStationTrackingTask.h
     )
 add_library(osimTaskSpaceControl SHARED ${FILES})

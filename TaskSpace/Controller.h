@@ -108,7 +108,7 @@ namespace TaskSpace {
 class OSIMTASKSPACECONTROL_API Controller : public OpenSim::Controller
 {
     // TODO use full namespaces?
-OpenSim_DECLARE_CONCRETE_OBJECT(OpenSim::TaskSpace::Controller, OpenSim::Controller);
+OpenSim_DECLARE_CONCRETE_OBJECT(TaskSpace::Controller, OpenSim::Controller);
 
 public:
 

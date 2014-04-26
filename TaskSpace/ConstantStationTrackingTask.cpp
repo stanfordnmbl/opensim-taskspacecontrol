@@ -1,8 +1,15 @@
 #include "ConstantStationTrackingTask.h"
 
+using SimTK::Vec3;
 
-Vector TaskSpace::ConstantStationTrackingTask::desiredLocation(const State& s)
-    const OVERRIDE_11 final
+using namespace OpenSim;
+
+TaskSpace::ConstantStationTrackingTask::ConstantStationTrackingTask()
 {
-    return get_desired_location();
+    constructProperties();
+}
+
+void TaskSpace::ConstantStationTrackingTask::constructProperties()
+{
+    constructProperty_desired_location(Vec3());
 }

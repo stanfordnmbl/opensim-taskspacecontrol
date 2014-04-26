@@ -12,6 +12,18 @@ using namespace SimTK;
 
 using namespace OpenSim;
 
+TaskSpace::StationTask::StationTask()
+{
+    constructProperties();
+}
+
+void TaskSpace::StationTask::constructProperties()
+{
+    // TODO the empty string is potentially confusing.
+    constructProperty_body_name("");
+    constructProperty_location_in_body(Vec3(0));
+}
+
 Vector TaskSpace::StationTask::generalizedForces(const State& s) const
 {
     Vector generalizedForces;
