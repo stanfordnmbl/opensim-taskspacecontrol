@@ -147,20 +147,18 @@ protected:
     virtual void setModel(const Model& model)
     {
         m_model = &model;
-        m_smss = &model.getMatterSubsystem();
     }
 
     const Model* m_model;
-    const SimbodyMatterSubsystem* m_smss;
 
 private:
 
+    // TODO replace with connectors.
     friend class PriorityLevel;
 
     void setNull()
     {
         m_model = NULL;
-        m_smss = NULL;
     }
 
 };

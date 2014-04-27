@@ -21,7 +21,7 @@ Matrix TaskSpace::Task::dynamicallyConsistentJacobianInverse(const State& s)
 
     for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
     {
-        m_smss->multiplyByMInv(s,
+        m_model->getMatterSubsystem().multiplyByMInv(s,
                 jacobianTransposeTimesLambda.col(iST),
                 dynConsistentJacobianInverse.updCol(iST));
     }
@@ -40,8 +40,9 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
 
     for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
     {
-        m_smss->multiplyByMInv(s, jacobianTranspose.col(iST),
-            systemMassMatrixInverseTimesJacobianTranspose.updCol(iST));
+        m_model->getMatterSubsystem().multiplyByMInv(s,
+                jacobianTranspose.col(iST),
+                systemMassMatrixInverseTimesJacobianTranspose.updCol(iST));
     }
 
     // J A^{-1} J^T
@@ -64,19 +65,19 @@ Vector TaskSpace::Task::taskSpaceQuadraticVelocity(const State& s) const
     /* TODO
     // \dot{J} \dot{q} (Khatib's terminology)
     // --------------------------------------
-    Vec3 jacobianDotTimesU = m_smss->calcBiasForStationJacobian(s,
+    Vec3 jacobianDotTimesU = m_model->getMatterSubsystem().calcBiasForStationJacobian(s,
             m_mobilizedBodyIndex, get_location_in_body());
 
     // \bar{J}^T b - \Lambda \dot{J} \dot{q}
     // -------------------------------------
     // TODO cache / copied code.
     Vector systemGravity;
-    m_smss->multiplyBySystemJacobianTranspose(s,
+    m_model->getMatterSubsystem().multiplyBySystemJacobianTranspose(s,
             m_model->getGravityForce().getBodyForces(s), systemGravity);
 
     // See Simbody doxygen documentation of calcResidualForce().
     Vector f_inertial;
-    m_smss->calcResidualForce(s, Vector(), Vector_<SpatialVec>(), Vector(),
+    m_model->getMatterSubsystem().calcResidualForce(s, Vector(), Vector_<SpatialVec>(), Vector(),
             Vector(), f_inertial);
     Vector systemQuadraticVelocity = f_inertial - systemGravity;
 
@@ -89,7 +90,7 @@ Vector TaskSpace::Task::taskSpaceQuadraticVelocity(const State& s) const
 Vector TaskSpace::Task::taskSpaceGravity(const State& s) const
 {
     Vector systemGravity;
-    m_smss->multiplyBySystemJacobianTranspose(s,
+    m_model->getMatterSubsystem().multiplyBySystemJacobianTranspose(s,
             m_model->getGravityForce().getBodyForces(s), systemGravity);
     return dynamicallyConsistentJacobianInverse(s).transpose() * systemGravity;
 }

@@ -20,7 +20,6 @@ TaskSpace::PriorityLevel::PriorityLevel()
 void TaskSpace::PriorityLevel::setNull()
 {
     m_model = NULL;
-    m_smss = NULL;
 }
 
 void TaskSpace::PriorityLevel::constructProperties()
@@ -93,7 +92,7 @@ Matrix TaskSpace::PriorityLevel::dynamicallyConsistentJacobianInverse(
 
     for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
     {
-        m_smss->multiplyByMInv(s,
+        m_model->getMatterSubsystem().multiplyByMInv(s,
                 jacobianTransposeTimesLambda.col(iST),
                 dynConsistentJacobianInverse.updCol(iST));
     }
@@ -112,8 +111,9 @@ Matrix TaskSpace::PriorityLevel::taskSpaceMassMatrix(const State& s)
 
     for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
     {
-        m_smss->multiplyByMInv(s, jacobianTranspose.col(iST),
-            systemMassMatrixInverseTimesJacobianTranspose.updCol(iST));
+        m_model->getMatterSubsystem().multiplyByMInv(s,
+                jacobianTranspose.col(iST),
+                systemMassMatrixInverseTimesJacobianTranspose.updCol(iST));
     }
 
     // J A^{-1} J^T
@@ -134,7 +134,6 @@ Matrix TaskSpace::PriorityLevel::taskSpaceMassMatrix(const State& s)
 void TaskSpace::PriorityLevel::setModel(const Model& model)
 {
     m_model = &model;
-    m_smss = &model.getMatterSubsystem();
 
     m_numScalarTasks = 0;
     for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)

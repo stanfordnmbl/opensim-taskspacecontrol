@@ -182,7 +182,6 @@ private:
     void setModel(const Model& model);
 
     const Model* m_model;
-    const SimbodyMatterSubsystem* m_smss;
 
     unsigned int m_numScalarTasks;
 

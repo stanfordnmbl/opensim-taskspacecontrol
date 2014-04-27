@@ -145,12 +145,9 @@ private:
     {
         Super::setModel(model);
         m_engine = &model.getSimbodyEngine();
-        m_mobilizedBodyIndex =
-            model.getBodySet().get(get_body_name()).getIndex();
     }
 
     const SimbodyEngine* m_engine;
-    MobilizedBodyIndex m_mobilizedBodyIndex;
 
     void constructProperties();
 
