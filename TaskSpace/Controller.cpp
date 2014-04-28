@@ -45,7 +45,8 @@ void TaskSpace::Controller::computeControls(const State& s,
     // The highest-priority level doesn't get filtered by a nullspace
     // projection.
     generalizedForces =
-        get_priority_levels().get(0).generalizedForces(s) + generalizedForces;
+        get_priority_levels().get(0).generalizedForces(s); // TODO + generalizedForces;
+    std::cout << "DEBUG Controller::computeControls " << generalizedForces << std::endl;
 
     // Send control signals to CoordinateActuator's.
     // ---------------------------------------------

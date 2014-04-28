@@ -11,6 +11,8 @@
 #include <TaskSpace/PriorityLevel.h>
 #include <TaskSpace/PriorityLevelSet.h>
 
+#include <iostream>
+
 using namespace OpenSim;
 using namespace SimTK;
 
@@ -19,6 +21,8 @@ int main()
     // Instantiate objects.
     // --------------------
     Model model("fourlinks.osim");
+    model.setUseVisualizer(true);
+
     TaskSpace::Controller * controller = new TaskSpace::Controller();
     controller->setName("goal_position");
     controller->setActuators(model.updActuators());
@@ -28,8 +32,9 @@ int main()
     // ------------------------------
     TaskSpace::ConstantStationTrackingTask * goalPosition =
         new TaskSpace::ConstantStationTrackingTask();
-    goalPosition->set_body_name("link3");
-    goalPosition->set_location_in_body(Vec3(1.0, 0.0, 0.0));
+    goalPosition->set_body_name("link4");
+    goalPosition->set_location_in_body(Vec3(0.1, 0.1, 0.0));
+    goalPosition->set_desired_location(Vec3(0.6, 1.0, 0.0));
     TaskSpace::PriorityLevel * priorityLevel =
         new TaskSpace::PriorityLevel();
     controller->upd_priority_levels().adoptAndAppend(priorityLevel);
@@ -46,6 +51,8 @@ int main()
 
     // Simulate.
     // ---------
+    // TODO std::cout << "Press Enter to start simulation..." << std::endl;
+    // TODO getchar();
     manager.integrate(initState);
 
     // Save data.

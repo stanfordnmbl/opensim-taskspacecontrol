@@ -53,15 +53,7 @@ public:
     // Implementation of StationTask interface
     // -------------------------------------------------------------------------
 
-    virtual Vec3 controlLaw(const State& s) const OVERRIDE_11 final
-    {
-        // \ddot{x}_{des} + k_p (\dot{x}_{des} - \dot{x}) + k_d * (x_{des} - x);
-        return desiredAcceleration(s) +
-            get_derivative_gain() * (desiredVelocity(s) -
-                    velocityOfStationInGroundExpressedInGround(s)) +
-            get_proportional_gain() * (desiredLocation(s) -
-                    locationOfStationExpressedInGround(s));
-    }
+    virtual Vec3 controlLaw(const State& s) const OVERRIDE_11 final;
 
 private:
 

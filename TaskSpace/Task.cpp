@@ -35,6 +35,7 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
     // -------------
     Matrix jac = jacobian(s);
     Matrix jacobianTranspose = jac.transpose();
+    // TODO std::cout << "DEBUG Task::taskSpaceMassMatrix jacobianTranspose " << jacobianTranspose << std::endl;
     Matrix systemMassMatrixInverseTimesJacobianTranspose(
             s.getNU(), getNumScalarTasks());
 
@@ -44,11 +45,13 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
                 jacobianTranspose.col(iST),
                 systemMassMatrixInverseTimesJacobianTranspose.updCol(iST));
     }
+    // TODO std::cout << "DEBUG Task::taskSpaceMassMatrix systemMassMatrixInverseTimesJacobianTranspose" << systemMassMatrixInverseTimesJacobianTranspose << std::endl;
 
     // J A^{-1} J^T
     // -------------
     Matrix taskMassMatrixInverse =
         jac * systemMassMatrixInverseTimesJacobianTranspose;
+    // TODO std::cout << "DEBUG Task::taskSpaceMassMatrix taskMassMatrixInverse" << taskMassMatrixInverse << std::endl;
 
     // (J A^{-1} J^T)^{-1}
     // -------------------
@@ -57,6 +60,7 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
     Matrix taskMassMatrix(getNumScalarTasks(), getNumScalarTasks());
     taskMassMatrixInverseLU.inverse(taskMassMatrix);
 
+    std::cout << "DEBUG Task::taskSpaceMassMatrix " << taskMassMatrix << std::endl;
     return taskMassMatrix;
 }
 

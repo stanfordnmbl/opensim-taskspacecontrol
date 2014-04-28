@@ -27,8 +27,11 @@ void TaskSpace::PriorityLevel::constructProperties()
     constructProperty_tasks(TaskSet());
 }
 
+// TODO this makes no sense. the priority level must collect
+// taskSpaceForce's...can't concatenate generalized forces.
 Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
 {
+    /* TODO
     Vector levelGenForces(getNumScalarTasks());
 
     // Used to write constituent generalized force vectors to the correct
@@ -46,6 +49,8 @@ Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
         STidx += nST;
     }
     return levelGenForces;
+    */
+    return get_tasks().get(0).generalizedForces(s);
 }
 
 Matrix TaskSpace::PriorityLevel::nullspaceProjection(const State& s)
