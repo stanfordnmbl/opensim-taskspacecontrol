@@ -167,9 +167,17 @@ find_path(OPENSIM_INCLUDE_DIR
     DOC ${OPENSIM_INCLUDE_DIR_DOC}
     )
 
+# This change is necessary for Simbody 3.4 and beyond, and is incompatible
+# with Simbody 3.3 and below.
+if(WIN32)
+    set(OPENSIM_SIMBODY_INCLUDE_RELPATH "include")
+else()
+    set(OPENSIM_SIMBODY_INCLUDE_RELPATH "simbody")
+endif()
+    
 set(OPENSIMSIMBODY_INCLUDE_DIR
     ${OPENSIM_INCLUDE_DIR}
-    ${OPENSIM_INCLUDE_DIR}/SimTK/simbody
+    ${OPENSIM_INCLUDE_DIR}/SimTK/${OPENSIM_SIMBODY_INCLUDE_RELPATH}
     )
 
 
@@ -182,11 +190,11 @@ get_filename_component(OPENSIM_ROOT_DIR "${OPENSIM_SDK_DIR}" PATH)
 # OPENSIM_LIB_DIR and OPENSIM_BIN_DIR
 # -----------------------------------
 if(WIN32)
-    set(OPENSIM_PLATFORM_LIB_RPATH "bin")
+    set(OPENSIM_PLATFORM_LIB_RELPATH "sdk/lib")
 else()
-    set(OPENSIM_PLATFORM_LIB_RPATH "lib")
+    set(OPENSIM_PLATFORM_LIB_RELPATH "lib")
 endif()
-set(OPENSIM_LIB_DIR ${OPENSIM_ROOT_DIR}/${OPENSIM_PLATFORM_LIB_RPATH})
+set(OPENSIM_LIB_DIR ${OPENSIM_ROOT_DIR}/${OPENSIM_PLATFORM_LIB_RELPATH})
 set(OPENSIM_BIN_DIR ${OPENSIM_ROOT_DIR}/bin)
 
 
@@ -203,6 +211,7 @@ set(OPENSIM_LIBRARY)
 set(OPENSIM_LIBRARY_LIST
     osimCommon osimSimulation osimAnalyses osimActuators osimTools)
 set(SIMBODY_LIBRARY_LIST SimTKcommon SimTKmath SimTKsimbody)
+
 
 foreach(LIB_NAME IN LISTS OPENSIM_LIBRARY_LIST)
     find_library(FOUND_LIB NAMES ${LIB_NAME}
@@ -264,8 +273,6 @@ if(OPENSIM_FOUND)
     set(OPENSIM_LIBRARIES ${OPENSIM_LIBRARY})
     set(OPENSIMSIMBODY_LIBRARIES ${OPENSIMSIMBODY_LIBRARY})
 endif()
-
-message("TODO ${OPENSIMSIMBODY_LIBRARIES}")
 
 mark_as_advanced(
     OPENSIM_ROOT_DIR
