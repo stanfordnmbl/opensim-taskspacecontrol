@@ -20,3 +20,7 @@ set(FILES
     )
 add_library(osimTaskSpaceControl SHARED ${FILES})
 target_link_libraries(osimTaskSpaceControl ${OPENSIMSIMBODY_LIBRARIES})
+
+# For Windows, to export symbols. See osimTaskSpaceControlDLL.h
+set_target_properties(osimTaskSpaceControl PROPERTIES
+    DEFINE_SYMBOL OSIM${UKIT}_EXPORTS)

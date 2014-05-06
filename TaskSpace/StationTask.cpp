@@ -35,7 +35,7 @@ Vector TaskSpace::StationTask::generalizedForces(const State& s) const
     return generalizedForces;
 }
 
-Matrix TaskSpace::StationTask::jacobian(const State& s) const OVERRIDE_11
+Matrix TaskSpace::StationTask::jacobian(const State& s) const
 {
     Matrix jacobian;
     MobilizedBodyIndex idx =

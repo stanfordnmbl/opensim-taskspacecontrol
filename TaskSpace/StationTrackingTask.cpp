@@ -14,7 +14,6 @@ void TaskSpace::StationTrackingTask::constructProperties()
 }
 
 Vec3 TaskSpace::StationTrackingTask::controlLaw(const State& s) const
-        OVERRIDE_11
 {
     // \ddot{x}_{des} + k_p (\dot{x}_{des} - \dot{x}) + k_d * (x_{des} - x);
     // TODO rename.

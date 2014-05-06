@@ -21,7 +21,7 @@ void TaskSpace::Controller::constructProperties()
 }
 
 void TaskSpace::Controller::computeControls(const State& s,
-        Vector& controls) const OVERRIDE_11
+        Vector& controls) const
 {
     // The control vector.
     // -------------------
