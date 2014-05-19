@@ -2,10 +2,18 @@
 
 using SimTK::FactorLU;
 using SimTK::Matrix;
+using SimTK::MobilizedBodyIndex;
+using SimTK::SpatialVec;
 using SimTK::State;
 using SimTK::Vector;
+using SimTK::Vector_;
 
 using namespace OpenSim;
+
+Vector TaskSpace::Task::generalizedForces(const State& s) const
+{
+    return jacobian(s).transpose() * taskSpaceForces(s);
+}
 
 Matrix TaskSpace::Task::dynamicallyConsistentJacobianInverse(const State& s)
     const
@@ -19,7 +27,7 @@ Matrix TaskSpace::Task::dynamicallyConsistentJacobianInverse(const State& s)
     // ------------------
     Matrix dynConsistentJacobianInverse(s.getNU(), getNumScalarTasks());
 
-    for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
+    for (unsigned int iST = 0; iST < getNumScalarTasks(); ++iST)
     {
         m_model->getMatterSubsystem().multiplyByMInv(s,
                 jacobianTransposeTimesLambda.col(iST),
@@ -39,7 +47,7 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
     Matrix systemMassMatrixInverseTimesJacobianTranspose(
             s.getNU(), getNumScalarTasks());
 
-    for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
+    for (unsigned int iST = 0; iST < getNumScalarTasks(); ++iST)
     {
         m_model->getMatterSubsystem().multiplyByMInv(s,
                 jacobianTranspose.col(iST),
@@ -62,33 +70,6 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
 
     std::cout << "DEBUG Task::taskSpaceMassMatrix " << taskMassMatrix << std::endl;
     return taskMassMatrix;
-}
-
-Vector TaskSpace::Task::taskSpaceQuadraticVelocity(const State& s) const
-{
-    /* TODO
-    // \dot{J} \dot{q} (Khatib's terminology)
-    // --------------------------------------
-    Vec3 jacobianDotTimesU = m_model->getMatterSubsystem().calcBiasForStationJacobian(s,
-            m_mobilizedBodyIndex, get_location_in_body());
-
-    // \bar{J}^T b - \Lambda \dot{J} \dot{q}
-    // -------------------------------------
-    // TODO cache / copied code.
-    Vector systemGravity;
-    m_model->getMatterSubsystem().multiplyBySystemJacobianTranspose(s,
-            m_model->getGravityForce().getBodyForces(s), systemGravity);
-
-    // See Simbody doxygen documentation of calcResidualForce().
-    Vector f_inertial;
-    m_model->getMatterSubsystem().calcResidualForce(s, Vector(), Vector_<SpatialVec>(), Vector(),
-            Vector(), f_inertial);
-    Vector systemQuadraticVelocity = f_inertial - systemGravity;
-
-    return dynamicallyConsistentJacobianInverse(s).transpose() *
-        systemQuadraticVelocity - taskSpaceMassMatrix(s) * jacobianDotTimesU;
-        */
-    return Vector();
 }
 
 Vector TaskSpace::Task::taskSpaceGravity(const State& s) const

@@ -84,13 +84,6 @@ public:
     unsigned int getNumScalarTasks() const OVERRIDE_11 final { return 3; }
 
     /**
-     * @brief \f$ \Gamma_{pt} = J_{pt}^T F_{pt} \f$.
-     *
-     * See the other methods in this class for \f$J_{pt}\f$ and \f$F_{pt}\f$.
-     */
-    Vector generalizedForces(const State& s) const OVERRIDE_11 final;
-
-    /**
      * @brief \f$ J_{pt} \in \mathbf{R}^{3 \times n} \f$, where \f$n\f$ is the
      * number of degrees of freedom in the Model.
      *
@@ -98,18 +91,16 @@ public:
      */
     Matrix jacobian(const State& s) const OVERRIDE_11 final;
 
-
-    // -------------------------------------------------------------------------
-    // Member functions
-    // -------------------------------------------------------------------------
-
     /**
      * @brief \f$ F_{pt} = \Lambda_{pt} F^{*} + \mu_{pt} + p_{pt} \in
      * \mathbf{R}^3 \f$: The force at the station, expressed in ground, that
      * achieves the control law and also compensates for the dynamics of the
      * system.
      */
-    Vec3 taskSpaceForce(const State& s) const;
+    Vector taskSpaceForces(const State& s) const OVERRIDE_11 final;
+
+    // TODO documentation?
+    Vector taskSpaceQuadraticVelocity(const State& s) const OVERRIDE_11 final;
 
 
     // -------------------------------------------------------------------------

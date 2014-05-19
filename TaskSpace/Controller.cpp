@@ -25,7 +25,7 @@ void TaskSpace::Controller::computeControls(const State& s,
 {
     // The control vector.
     // -------------------
-    
+
     // Gamma = Gamma_0 + N_0^T * (Gamma_1 + N_1^T * (Gamma_2 + N_2^T * (...)))
     // We compute the inner parentheses first. This is like how it's more
     // efficient to compute the polynomial a + bx + cx^2 + dx^3 as:

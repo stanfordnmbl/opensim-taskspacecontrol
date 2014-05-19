@@ -27,33 +27,12 @@ void TaskSpace::PriorityLevel::constructProperties()
     constructProperty_tasks(TaskSet());
 }
 
-// TODO this makes no sense. the priority level must collect
-// taskSpaceForce's...can't concatenate generalized forces.
-Vector TaskSpace::PriorityLevel::generalizedForces(const State& s)
+Vector TaskSpace::PriorityLevel::generalizedForces(const State& s) const
 {
-    /* TODO
-    Vector levelGenForces(getNumScalarTasks());
-
-    // Used to write constituent generalized force vectors to the correct
-    // place.
-    unsigned int STidx = 0;
-
-    for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
-    {
-        unsigned int nST = get_tasks().get(iT).getNumScalarTasks();
-
-        // Write the nST x 1 matrix (vector) to the (STidx, 0) location.
-        levelGenForces.updBlock(STidx, 0, nST, 1) =
-            get_tasks().get(iT).generalizedForces(s);
-
-        STidx += nST;
-    }
-    return levelGenForces;
-    */
-    return get_tasks().get(0).generalizedForces(s);
+    return jacobian(s).transpose() * taskSpaceForces(s);
 }
 
-Matrix TaskSpace::PriorityLevel::nullspaceProjection(const State& s)
+Matrix TaskSpace::PriorityLevel::nullspaceProjection(const State& s) const
 {
     // Build identity matrix.
     Matrix identity(s.getNU(), s.getNU());
@@ -63,7 +42,27 @@ Matrix TaskSpace::PriorityLevel::nullspaceProjection(const State& s)
     return identity - dynamicallyConsistentJacobianInverse(s) * jacobian(s);
 }
 
-Matrix TaskSpace::PriorityLevel::jacobian(const State& s)
+Vector TaskSpace::PriorityLevel::taskSpaceForces(const State& s) const
+{
+    Vector levelTaskForces(getNumScalarTasks());
+
+    // Used to write constituent task force vectors to the correct place.
+    unsigned int STidx = 0;
+
+    for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
+    {
+        unsigned int nST = get_tasks().get(iT).getNumScalarTasks();
+
+        // Write the nST x 1 matrix (vector) to the (STidx, 0) location.
+        levelTaskForces.updBlock(STidx, 0, nST, 1) =
+            get_tasks().get(iT).taskSpaceForces(s);
+
+        STidx += nST;
+    }
+    return levelTaskForces;
+}
+
+Matrix TaskSpace::PriorityLevel::jacobian(const State& s) const
 {
     Matrix levelJacobian(getNumScalarTasks(), s.getNU());
 
@@ -84,7 +83,7 @@ Matrix TaskSpace::PriorityLevel::jacobian(const State& s)
 }
 
 Matrix TaskSpace::PriorityLevel::dynamicallyConsistentJacobianInverse(
-        const State& s)
+        const State& s) const
 {
     // J^T \Lambda
     // -----------
@@ -95,7 +94,7 @@ Matrix TaskSpace::PriorityLevel::dynamicallyConsistentJacobianInverse(
     // ------------------
     Matrix dynConsistentJacobianInverse(s.getNU(), getNumScalarTasks());
 
-    for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
+    for (unsigned int iST = 0; iST < getNumScalarTasks(); ++iST)
     {
         m_model->getMatterSubsystem().multiplyByMInv(s,
                 jacobianTransposeTimesLambda.col(iST),
@@ -105,7 +104,7 @@ Matrix TaskSpace::PriorityLevel::dynamicallyConsistentJacobianInverse(
     return dynConsistentJacobianInverse;
 }
 
-Matrix TaskSpace::PriorityLevel::taskSpaceMassMatrix(const State& s)
+Matrix TaskSpace::PriorityLevel::taskSpaceMassMatrix(const State& s) const
 {
     // A^{-1} J^T
     // -------------
@@ -114,7 +113,7 @@ Matrix TaskSpace::PriorityLevel::taskSpaceMassMatrix(const State& s)
     Matrix systemMassMatrixInverseTimesJacobianTranspose(
             s.getNU(), getNumScalarTasks());
 
-    for (unsigned int iST = 0; iST < getNumScalarTasks(); iST++)
+    for (unsigned int iST = 0; iST < getNumScalarTasks(); ++iST)
     {
         m_model->getMatterSubsystem().multiplyByMInv(s,
                 jacobianTranspose.col(iST),
@@ -141,7 +140,7 @@ void TaskSpace::PriorityLevel::setModel(const Model& model)
     m_model = &model;
 
     m_numScalarTasks = 0;
-    for (unsigned int iT = 0; iT < get_tasks().getSize(); iT++)
+    for (unsigned int iT = 0; iT < get_tasks().getSize(); ++iT)
     {
         get_tasks().get(iT).setModel(model);
         m_numScalarTasks += get_tasks().get(iT).getNumScalarTasks();

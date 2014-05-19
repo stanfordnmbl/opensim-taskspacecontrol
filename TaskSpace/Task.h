@@ -41,8 +41,9 @@ public:
         setNull();
     }
 
+
     // -------------------------------------------------------------------------
-    // Specification of Task interface
+    // Specification of Task interface; methods used by TaskSpace::PriorityLevel
     // -------------------------------------------------------------------------
 
     /**
@@ -60,24 +61,55 @@ public:
     virtual unsigned int getNumScalarTasks() const = 0;
 
     /**
-     * @brief This quantity is denoted as \f$ J_{pt} \in \mathbf{R}^{s} \f$.
+     * @brief This quantity is denoted as \f$ J_{pt} \in \mathbf{R}^{S} \f$.
      */
     virtual Matrix jacobian(const State& s) const = 0;
 
     /**
-     * @brief This quantity is denoted as \f$ \Gamma_{pt} \in \mathbf{R}^{s}
+     * @brief This quantity is denoted as \f$ F_{pt} \in \mathbf{R}^{S}
      * \f$.
      *
-     * The generalized forces are designed to achieve the related scalar tasks.
+     * The task-space forces are designed to achieve the related scalar tasks.
      */
-    virtual Vector generalizedForces(const State& s) const = 0;
+    virtual Vector taskSpaceForces(const State& s) const = 0;
+
+    /**
+     * @brief \f$ \mu_{pt} = \bar{J}^T b - \Lambda_{pt} \dot{J}_{pt} \dot{q}
+     * \in \mathbf{R}^3 \f$.  
+     *
+     * where:
+     * - \f$ b \f$ is the quadratic velocity vector for the whole system, in
+     *   generalized coordinates.
+     * - \f$ \Lambda_{pt} \f$ is the task space mass matrix of this task.
+     * - \f$ \dot{J}_{pt} \f$ is the derivative of this Tasks' jacobian.
+     * - \f$ q \f$ is the generalized coordinates.
+     *
+     * Used in taskSpaceForce(). In Simbody, this cannot be computed as a
+     * function of the jacobian(s). Therefore, the specific Task must provide
+     * this.
+     *
+     */
+    virtual Vector taskSpaceQuadraticVelocity(const State& s) const = 0;
 
 
     // -------------------------------------------------------------------------
     // Member functions
     // -------------------------------------------------------------------------
-    // TODO the existence of these methods in Task indicates that
+    // TODO the existence of (most of) these methods in Task indicates that
     // PriorityLevel should just be a CompositeTask.
+
+    /**
+     * @brief This quantity is denoted as \f$ \Gamma_{pt} \in \mathbf{R}^{S}
+     * \f$.
+     *
+     * The generalized forces are obtained via:
+     *
+     * \f[
+     *      \Gamma_{pt} = J_{pt}^T F_{pt}
+     * \f]
+     *
+     */
+    virtual Vector generalizedForces(const State& s) const;
 
     /**
      * @brief This quantity is denoted as \f$ \bar{J}_{pt} \in \mathbf{R}^{n
@@ -116,21 +148,6 @@ public:
      * - \f$ J_{pt} \f$ is this Task's jacobian (see related method).
      */
     Matrix taskSpaceMassMatrix(const State& s) const;
-
-    /**
-     * @brief \f$ \mu_{pt} = \bar{J}^T b - \Lambda_{pt} \dot{J}_{pt} \dot{q}
-     * \in \mathbf{R}^3 \f$.  
-     *
-     * where:
-     * - \f$ b \f$ is the quadratic velocity vector for the whole system, in
-     *   generalized coordinates.
-     * - \f$ \Lambda_{pt} \f$ is the task space mass matrix of this task.
-     * - \f$ \dot{J}_{pt} \f$ is the derivative of this Tasks' jacobian.
-     * - \f$ q \f$ is the generalized coordinates.
-     *
-     * Used in taskSpaceForce().
-     */
-    Vector taskSpaceQuadraticVelocity(const State& s) const;
 
     /**
      * @brief \f$ p_{pt} = \bar{J}^T g \in \mathbf{R}^3 \f$.
