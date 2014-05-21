@@ -13,8 +13,10 @@
 // of the coordinate.
 // TODO nest my classes, or take them out of the namespace to make them
 // reusable.
-// TODO make classes into subcomponents.
+// TODO make classes into subcomponents. (remove setModel's).
 // TODO make human reaching example.
+// TODO add cooridnate actuators if they are missing.
+// TODO have station tracking task generate decorations!
 
 namespace OpenSim {
 
