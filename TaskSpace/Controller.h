@@ -5,6 +5,19 @@
 #include "PriorityLevelSet.h"
 #include "osimTaskSpaceControlDLL.h"
 
+// TODO re-document to account for concatenating task-space forces.
+// TODO nullspace damping
+// TODO quadratic velocity
+// TODO cache my variables (need to make into model components)
+// TODO coordinate tasks (how do i provide a jacobian for these? need the index
+// of the coordinate.
+// TODO nest my classes, or take them out of the namespace to make them
+// reusable.
+// TODO make classes into subcomponents. (remove setModel's).
+// TODO make human reaching example.
+// TODO add cooridnate actuators if they are missing.
+// TODO have station tracking task generate decorations!
+
 namespace OpenSim {
 
 namespace TaskSpace {

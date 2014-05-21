@@ -59,26 +59,14 @@ public:
     /**
      * @brief This quantity is denoted as \f$ \Gamma_p \in \mathbf{R}^n \f$.
      * These generalized forces attempt to achieve all Task's within the
-     * PriorityLevel.
-     *
-     * This Vector is obtained by concatenating the generalized forces of the
-     * constituent Task:
+     * PriorityLevel. This vector is obtained via:
      *
      * \f[
-     * \Gamma_p =
-     * \begin{bmatrix}
-     *       \Gamma_{p1} \\
-     *       \Gamma_{p2} \\
-     *       \vdots \\
-     *       \Gamma_{pT}
-     * \end{bmatrix}
+     *      \Gamma_p = J_p^T F_p
      * \f]
      *
-     * where \f$ T \f$ is the number of Task's in this PriorityLevel, and
-     * \f$ \Gamma_{pt} \f$ is the generalized forces for the \f$t\f$-th Task in
-     * PriorityLevel \f$p\f$.
      */
-    Vector generalizedForces(const State& s);
+    Vector generalizedForces(const State& s) const;
 
     /**
      * @brief This quantity is denoted as \f$ N_p \in \mathbf{R}^{n \times n}
@@ -98,7 +86,7 @@ public:
      * - \f$ J_p \f$ is this PriorityLevel's jacobian (see related method).
      *
      */
-    Matrix nullspaceProjection(const State& s);
+    Matrix nullspaceProjection(const State& s) const;
 
 
     // -------------------------------------------------------------------------
@@ -106,12 +94,37 @@ public:
     // -------------------------------------------------------------------------
 
     /**
-     * TODO
+     * @brief The dimension of this PriorityLevel; \f$ S \f$.
+     *
+     * This is the sum of the number of scalar tasks of the constituent Task's.
      */
     unsigned int getNumScalarTasks() const
     {
         return m_numScalarTasks;
     }
+
+    /**
+     * @brief This quantity is denoted as \f$ F_p \in \mathbf{R}^S \f$, where
+     * \f$S\f$ is the number of scalar tasks in this PriorityLevel. This Vector
+     * is obtained by concatenating the task-space forces of the constituent
+     * Task:
+     *
+     * \f[
+     * F_p =
+     * \begin{bmatrix}
+     *       F_{p1} \\
+     *       F_{p2} \\
+     *       \vdots \\
+     *       F_{pT}
+     * \end{bmatrix}
+     * \f]
+     *
+     * where \f$ T \f$ is the number of Task's in this PriorityLevel, and
+     * \f$ F_{pt} \f$ is the task-space forces for the \f$t\f$-th Task in
+     * PriorityLevel \f$p\f$.
+     *
+     */
+    Vector taskSpaceForces(const State& s) const;
 
     /**
      * @brief This quantity is denoted as \f$ J_p \in \mathbf{R}^{S \times
@@ -136,7 +149,7 @@ public:
      *
      * \f]
      */
-    Matrix jacobian(const State& s);
+    Matrix jacobian(const State& s) const;
 
     /**
      * @brief This quantity is denoted as \f$ \bar{J}_p \in \mathbf{R}^{n
@@ -157,7 +170,7 @@ public:
      *   related method).
      *
      */
-    Matrix dynamicallyConsistentJacobianInverse(const State& s);
+    Matrix dynamicallyConsistentJacobianInverse(const State& s) const;
 
     /**
      * @brief This quantity is denoted as \f$ \Lambda_p \in \mathbf{R}^{S
@@ -175,7 +188,7 @@ public:
      *   the \f$ n \f$ generalized coordinates).
      * - \f$ J_p \f$ is this PriorityLevel's jacobian (see related method).
      */
-    Matrix taskSpaceMassMatrix(const State& s);
+    Matrix taskSpaceMassMatrix(const State& s) const;
 
 private:
 

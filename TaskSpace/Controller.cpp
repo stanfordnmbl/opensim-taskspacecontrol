@@ -25,18 +25,24 @@ void TaskSpace::Controller::computeControls(const State& s,
 {
     // The control vector.
     // -------------------
-    
+
     // Gamma = Gamma_0 + N_0^T * (Gamma_1 + N_1^T * (Gamma_2 + N_2^T * (...)))
     // We compute the inner parentheses first. This is like how it's more
     // efficient to compute the polynomial a + bx + cx^2 + dx^3 as:
     //      a + x(b + x(c + xd))
     Vector generalizedForces(s.getNU());
     generalizedForces.setToZero();
+    // TODO 
+    Matrix N_OP_T(s.getNU(), s.getNU());
+    N_OP_T.setToZero();
+    N_OP_T.diag().setTo(1.0);
 
     for (unsigned int iP = get_priority_levels().getSize() - 1; iP > 0; iP--)
     {
         Matrix NT =
             get_priority_levels().get(iP - 1).nullspaceProjection(s).transpose();
+        // TODO might be swapped.
+        N_OP_T = NT * N_OP_T;
         Vector Gamma_iP = get_priority_levels().get(iP).generalizedForces(s);
 
         generalizedForces = NT * (Gamma_iP + generalizedForces);
@@ -45,7 +51,7 @@ void TaskSpace::Controller::computeControls(const State& s,
     // The highest-priority level doesn't get filtered by a nullspace
     // projection.
     generalizedForces =
-        get_priority_levels().get(0).generalizedForces(s); // TODO + generalizedForces;
+        get_priority_levels().get(0).generalizedForces(s) + generalizedForces - 100 * N_OP_T * s.getU();
     std::cout << "DEBUG Controller::computeControls " << generalizedForces << std::endl;
 
     // Send control signals to CoordinateActuator's.
