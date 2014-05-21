@@ -68,7 +68,7 @@ Matrix TaskSpace::Task::taskSpaceMassMatrix(const State& s) const
     Matrix taskMassMatrix(getNumScalarTasks(), getNumScalarTasks());
     taskMassMatrixInverseLU.inverse(taskMassMatrix);
 
-    std::cout << "DEBUG Task::taskSpaceMassMatrix " << taskMassMatrix << std::endl;
+// TODO    std::cout << "DEBUG Task::taskSpaceMassMatrix " << taskMassMatrix << std::endl;
     return taskMassMatrix;
 }
 

@@ -31,7 +31,7 @@ Vector TaskSpace::StationTask::taskSpaceForces(const State& s) const
     Vector taskSpaceForce =
         taskSpaceMassMatrix(s) * Vector_<Real>(controlLaw(s)); //TODO +
         // TODO Vector_<Real>(taskSpaceQuadraticVelocity(s) + taskSpaceGravity(s));
-     std::cout << "DEBUG StationTask::taskSpaceForce " << taskSpaceForce << std::endl;
+     // TODO std::cout << "DEBUG StationTask::taskSpaceForce " << taskSpaceForce << std::endl;
     return taskSpaceForce;
 }
 
@@ -44,7 +44,7 @@ Matrix TaskSpace::StationTask::jacobian(const State& s) const
         m_model->getBodySet().get(get_body_name()).getIndex();
     m_model->getMatterSubsystem().calcStationJacobian(s, mbi,
             get_location_in_body(), jacobian);
-    std::cout << "DEBUG StationTask::jacobian " << jacobian << std::endl;
+// TODO     std::cout << "DEBUG StationTask::jacobian " << jacobian << std::endl;
     return jacobian;
 }
 

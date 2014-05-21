@@ -26,19 +26,30 @@ int main()
     TaskSpace::Controller * controller = new TaskSpace::Controller();
     controller->setName("goal_position");
     controller->setActuators(model.updActuators());
-    model.addController(controller);
 
-    // Define the goal position task.
-    // ------------------------------
-    TaskSpace::ConstantStationTrackingTask * goalPosition =
+    // Define the tasks.
+    // -----------------
+    TaskSpace::ConstantStationTrackingTask * endEffector =
         new TaskSpace::ConstantStationTrackingTask();
-    goalPosition->set_body_name("link4");
-    goalPosition->set_location_in_body(Vec3(0.1, 0.1, 0.0));
-    goalPosition->set_desired_location(Vec3(0.6, 1.0, 0.0));
-    TaskSpace::PriorityLevel * priorityLevel =
+    endEffector->set_body_name("link4");
+    endEffector->set_location_in_body(Vec3(0.1, 0.1, 0.0));
+    endEffector->set_desired_location(Vec3(0.6, 1.0, 0.0));
+    TaskSpace::PriorityLevel * priorityLevel1 =
         new TaskSpace::PriorityLevel();
-    controller->upd_priority_levels().adoptAndAppend(priorityLevel);
-    priorityLevel->upd_tasks().adoptAndAppend(goalPosition);
+    controller->upd_priority_levels().adoptAndAppend(priorityLevel1);
+    priorityLevel1->upd_tasks().adoptAndAppend(endEffector);
+
+    TaskSpace::ConstantStationTrackingTask * link2 =
+        new TaskSpace::ConstantStationTrackingTask();
+    link2->set_body_name("link2");
+    link2->set_location_in_body(Vec3(0.5, 0.1, 0.0));
+    link2->set_desired_location(Vec3(0.2, 1.5, 0.0));
+    priorityLevel1->upd_tasks().adoptAndAppend(link2);
+    // TODO TaskSpace::PriorityLevel * priorityLevel2 =
+    // TODO     new TaskSpace::PriorityLevel();
+// TODO    controller->upd_priority_levels().adoptAndAppend(priorityLevel2);
+
+    model.addController(controller);
 
     // Prepare to simulate.
     // --------------------

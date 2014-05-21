@@ -42,7 +42,7 @@ void TaskSpace::Controller::computeControls(const State& s,
         Matrix NT =
             get_priority_levels().get(iP - 1).nullspaceProjection(s).transpose();
         // TODO might be swapped.
-        N_OP_T = NT * N_OP_T;
+        N_OP_T = N_OP_T * NT;
         Vector Gamma_iP = get_priority_levels().get(iP).generalizedForces(s);
 
         generalizedForces = NT * (Gamma_iP + generalizedForces);
@@ -52,7 +52,7 @@ void TaskSpace::Controller::computeControls(const State& s,
     // projection.
     generalizedForces =
         get_priority_levels().get(0).generalizedForces(s) + generalizedForces - 100 * N_OP_T * s.getU();
-    std::cout << "DEBUG Controller::computeControls " << generalizedForces << std::endl;
+    // TODO std::cout << "DEBUG Controller::computeControls " << generalizedForces << std::endl;
 
     // Send control signals to CoordinateActuator's.
     // ---------------------------------------------

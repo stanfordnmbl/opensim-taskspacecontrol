@@ -22,8 +22,8 @@ Vec3 TaskSpace::StationTrackingTask::controlLaw(const State& s) const
                 velocityOfStationInGroundExpressedInGround(s)) +
         get_proportional_gain() * (desiredLocation(s) -
                 locationOfStationExpressedInGround(s));
-    std::cout << "DEBUG StationTrackingTask::controlLaw loc in ground " << locationOfStationExpressedInGround(s) << std::endl;
-    std::cout << "DEBUG StationTrackingTask::controlLaw vel in ground " << velocityOfStationInGroundExpressedInGround(s) << std::endl;
-    std::cout << "DEBUG StationTrackingTask::controlLaw " << toReturn << std::endl;
+// TODO    std::cout << "DEBUG StationTrackingTask::controlLaw loc in ground " << locationOfStationExpressedInGround(s) << std::endl;
+// TODO    std::cout << "DEBUG StationTrackingTask::controlLaw vel in ground " << velocityOfStationInGroundExpressedInGround(s) << std::endl;
+// TODO    std::cout << "DEBUG StationTrackingTask::controlLaw " << toReturn << std::endl;
     return toReturn;
 }
