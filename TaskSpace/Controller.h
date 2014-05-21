@@ -18,6 +18,9 @@
 // TODO add cooridnate actuators if they are missing.
 // TODO have station tracking task generate decorations!
 // TODO add new tasks.
+// TODO getNumScalarTasks can depend on the const state.
+// TODO can gather NumScalarTasks from the dimension of the jacobian.... don't
+// introduce a chance for error.
 
 namespace OpenSim {
 

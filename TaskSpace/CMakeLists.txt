@@ -17,6 +17,7 @@ set(FILES
     StationTrackingTask.h
     ConstantStationTrackingTask.cpp
     ConstantStationTrackingTask.h
+    GravityCompensationTask.h
     )
 add_library(osimTaskSpaceControl SHARED ${FILES})
 target_link_libraries(osimTaskSpaceControl ${OPENSIMSIMBODY_LIBRARIES})

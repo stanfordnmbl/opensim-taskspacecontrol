@@ -7,7 +7,8 @@
 
 #include <TaskSpace/Controller.h>
 #include <TaskSpace/TaskSet.h>
-#include <TaskSpace/ConstantStationTrackingTask.h>
+// TODO#include <TaskSpace/ConstantStationTrackingTask.h>
+#include <TaskSpace/GravityCompensationTask.h>
 #include <TaskSpace/PriorityLevel.h>
 #include <TaskSpace/PriorityLevelSet.h>
 
@@ -29,6 +30,14 @@ int main()
 
     // Define the tasks.
     // -----------------
+    TaskSpace::GravityCompensationTask * gravComp =
+        new TaskSpace::GravityCompensationTask();
+    TaskSpace::PriorityLevel * priorityLevel1 =
+        new TaskSpace::PriorityLevel();
+    controller->upd_priority_levels().adoptAndAppend(priorityLevel1);
+    priorityLevel1->upd_tasks().adoptAndAppend(gravComp);
+
+    /*
     TaskSpace::ConstantStationTrackingTask * endEffector =
         new TaskSpace::ConstantStationTrackingTask();
     endEffector->set_body_name("link4");
@@ -48,6 +57,7 @@ int main()
     // TODO TaskSpace::PriorityLevel * priorityLevel2 =
     // TODO     new TaskSpace::PriorityLevel();
 // TODO    controller->upd_priority_levels().adoptAndAppend(priorityLevel2);
+*/
 
     model.addController(controller);
 
